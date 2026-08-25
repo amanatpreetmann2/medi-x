@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import StatsCard from "../components/StatsCard";
 import HealthChart from "../components/HealthChart";
 import healthBanner from "../assets/health-banner.jpg";
@@ -15,7 +15,30 @@ import {
   Sparkles
 } from "lucide-react";
 
-function Dashboard({ setPage }) {
+function Dashboard({ setPage, showToast, onOpenBookAppointment }) {
+  const [medications, setMedications] = useState([
+    { id: 1, name: "Lisinopril (10mg)", schedule: "1 tablet daily, Morning", taken: true },
+    { id: 2, name: "Atorvastatin (20mg)", schedule: "1 tablet daily, Evening", taken: false }
+  ]);
+
+  const toggleMedication = (id) => {
+    setMedications(prev => prev.map(med => {
+      if (med.id === id) {
+        const nextState = !med.taken;
+        if (showToast) {
+          showToast(
+            nextState
+              ? `Marked ${med.name} as TAKEN ✓`
+              : `${med.name} marked as Upcoming`,
+            'success'
+          );
+        }
+        return { ...med, taken: nextState };
+      }
+      return med;
+    }));
+  };
+
   return (
     <main className="content">
       {/* Welcome Banner */}
@@ -139,7 +162,7 @@ function Dashboard({ setPage }) {
         </div>
 
         {/* Appointment Card */}
-        <div className="upcoming-card" style={{ background: 'var(--color-white)', borderRadius: '14px', border: '1px solid var(--border)', borderLeft: '4px solid #F59E0B', padding: '18px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div className="upcoming-card" style={{ background: 'var(--color-white)', borderRadius: '14px', border: '1px solid var(--border)', borderLeft: '4px solid #F59E0B', padding: '18px', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer' }} onClick={onOpenBookAppointment}>
           <div className="upcoming-date" style={{ width: '60px', height: '65px', background: '#FEF3C7', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#D97706', flexShrink: 0 }}>
             <small style={{ fontSize: '10px', fontWeight: 800 }}>OCT</small>
             <strong style={{ fontSize: '24px', fontWeight: 800 }}>14</strong>
@@ -158,39 +181,53 @@ function Dashboard({ setPage }) {
         </div>
       </div>
 
-      <h2 className="section-heading">Medications</h2>
+      <h2 className="section-heading">Interactive Medication Tracker</h2>
 
-      {/* Colorful Medications Box */}
+      {/* Interactive Medications Box */}
       <div className="medication-box" style={{ background: 'var(--color-white)', borderRadius: '14px', border: '1px solid var(--border)', overflow: 'hidden' }}>
-        <div className="medication-row" style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
-          <div className="medicine-icon" style={{ width: '44px', height: '44px', borderRadius: '50%', background: '#D1FAE5', color: '#059669', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Pill size={20} />
+        {medications.map(med => (
+          <div key={med.id} className="medication-row" style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
+            <div className="medicine-icon" style={{ width: '44px', height: '44px', borderRadius: '50%', background: med.taken ? '#D1FAE5' : '#E0E7FF', color: med.taken ? '#059669' : '#4338CA', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Pill size={20} />
+            </div>
+            <div className="medicine-details" style={{ flex: 1 }}>
+              <strong style={{ fontSize: '14px', color: 'var(--text)' }}>{med.name}</strong>
+              <span style={{ fontSize: '12px', color: 'var(--muted)' }}>{med.schedule}</span>
+            </div>
+            <span
+              className="taken-badge"
+              style={{
+                background: med.taken ? '#D1FAE5' : '#E0E7FF',
+                color: med.taken ? '#047857' : '#4338CA',
+                fontWeight: 700,
+                fontSize: '11px',
+                padding: '5px 14px',
+                borderRadius: '20px'
+              }}
+            >
+              {med.taken ? 'Taken' : 'Upcoming'}
+            </span>
+            <button
+              onClick={() => toggleMedication(med.id)}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: med.taken ? '#059669' : 'white',
+                border: med.taken ? 'none' : '2px solid #C7D2FE',
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              title="Click to toggle taken status"
+            >
+              {med.taken && <Check size={16} />}
+            </button>
           </div>
-          <div className="medicine-details" style={{ flex: 1 }}>
-            <strong style={{ fontSize: '14px', color: 'var(--text)' }}>Lisinopril (10mg)</strong>
-            <span style={{ fontSize: '12px', color: 'var(--muted)' }}>1 tablet daily, Morning</span>
-          </div>
-          <span className="taken-badge" style={{ background: '#D1FAE5', color: '#047857', fontWeight: 700, fontSize: '11px', padding: '5px 14px', borderRadius: '20px' }}>
-            Taken
-          </span>
-          <div className="circle-check" style={{ width: '30px', height: '30px', borderRadius: '50%', background: '#059669', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Check size={16} />
-          </div>
-        </div>
-
-        <div className="medication-row" style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '16px 20px' }}>
-          <div className="medicine-icon" style={{ width: '44px', height: '44px', borderRadius: '50%', background: '#E0E7FF', color: '#4338CA', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Pill size={20} />
-          </div>
-          <div className="medicine-details" style={{ flex: 1 }}>
-            <strong style={{ fontSize: '14px', color: 'var(--text)' }}>Atorvastatin (20mg)</strong>
-            <span style={{ fontSize: '12px', color: 'var(--muted)' }}>1 tablet daily, Evening</span>
-          </div>
-          <span className="upcoming-badge" style={{ background: '#E0E7FF', color: '#4338CA', fontWeight: 700, fontSize: '11px', padding: '5px 14px', borderRadius: '20px' }}>
-            Upcoming
-          </span>
-          <div className="empty-circle" style={{ width: '30px', height: '30px', borderRadius: '50%', border: '2px solid #C7D2FE' }}></div>
-        </div>
+        ))}
       </div>
     </main>
   );

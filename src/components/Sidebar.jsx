@@ -11,7 +11,7 @@ import {
   LogOut
 } from "lucide-react";
 
-function Sidebar({ page, setPage, user, onLogout }) {
+function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
   const userDisplay = user?.email || user?.name || "patient@medix.com";
   const initials = userDisplay ? userDisplay.substring(0, 2).toUpperCase() : "MX";
 
@@ -70,7 +70,13 @@ function Sidebar({ page, setPage, user, onLogout }) {
       {/* Appointment Button */}
       <button
         className="book-appointment"
-        onClick={() => setPage("Appointments")}
+        onClick={() => {
+          if (onOpenBookAppointment) {
+            onOpenBookAppointment();
+          } else {
+            setPage("Appointments");
+          }
+        }}
       >
         <Calendar size={17} />
         Book Appointment
