@@ -3740,3 +3740,195 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ============================= */
+/* RESCHEDULE CALENDAR */
+/* ============================= */
+
+.calendar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 30, 50, 0.45);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 1000;
+}
+
+
+.calendar-modal {
+  width: 440px;
+  background: white;
+
+  border-radius: 16px;
+
+  padding: 26px;
+
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+
+.calendar-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  margin-bottom: 24px;
+}
+
+
+.calendar-modal-header h2 {
+  margin: 0;
+
+  font-size: 22px;
+
+  color: #202936;
+}
+
+
+.calendar-modal-header p {
+  margin-top: 6px;
+
+  color: #687386;
+
+  font-size: 14px;
+}
+
+
+.close-calendar {
+  border: none;
+
+  background: #f1f4f8;
+
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+}
+
+
+.calendar-box {
+  border: 1px solid #d8e0eb;
+
+  border-radius: 12px;
+
+  padding: 25px;
+
+  text-align: center;
+
+  color: #07569f;
+}
+
+
+.calendar-box h3 {
+  margin: 12px 0 5px;
+
+  color: #202936;
+
+  font-size: 17px;
+}
+
+
+.calendar-box p {
+  margin: 0 0 20px;
+
+  color: #788395;
+
+  font-size: 13px;
+}
+
+
+.calendar-box input {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 13px;
+
+  border: 1px solid #b9c7d9;
+
+  border-radius: 8px;
+
+  font-size: 15px;
+
+  color: #202936;
+
+  cursor: pointer;
+}
+
+
+.calendar-box input:focus {
+  outline: none;
+
+  border-color: #075ca8;
+
+  box-shadow: 0 0 0 3px rgba(7, 92, 168, 0.1);
+}
+
+
+.calendar-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  margin-top: 22px;
+}
+
+
+.cancel-calendar {
+  padding: 11px 20px;
+
+  border: 1px solid #ccd5e1;
+
+  background: white;
+
+  border-radius: 7px;
+
+  cursor: pointer;
+
+  color: #566276;
+}
+
+
+.confirm-calendar {
+  padding: 11px 20px;
+
+  border: none;
+
+  background: #075ca8;
+
+  color: white;
+
+  border-radius: 7px;
+
+  cursor: pointer;
+
+  font-weight: 600;
+}
+
+
+.confirm-calendar:hover {
+  background: #064d8e;
+}

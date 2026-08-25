@@ -2,16 +2,15 @@ import React, { useState } from "react";
 
 import {
   Calendar,
-  FileText
+  FileText,
+  X
 } from "lucide-react";
 
 function Appointments() {
 
-  const [tab, setTab] =
-    useState("Upcoming");
+  const [tab, setTab] = useState("Upcoming");
 
-
-  const upcomingAppointments = [
+  const [appointments, setAppointments] = useState([
     {
       month: "OCT",
       date: "24",
@@ -29,8 +28,7 @@ function Appointments() {
       specialty: "General Practice",
       initials: "MD"
     }
-  ];
-
+  ]);
 
   const pastAppointments = [
     {
@@ -38,8 +36,7 @@ function Appointments() {
       date: "12",
       time: "09:15 AM",
       doctor: "Dr. Sarah Jenkins",
-      specialty:
-        "Cardiology • Annual Physical",
+      specialty: "Cardiology • Annual Physical",
       initials: "SJ"
     },
 
@@ -48,17 +45,66 @@ function Appointments() {
       date: "28",
       time: "03:45 PM",
       doctor: "Dr. Mark Davis",
-      specialty:
-        "General Practice • Follow-up",
+      specialty: "General Practice • Follow-up",
       initials: "MD"
     }
   ];
 
+  // Calendar modal
+  const [showCalendar, setShowCalendar] = useState(false);
 
-  const appointments =
-    tab === "Upcoming"
-      ? upcomingAppointments
-      : pastAppointments;
+  // Which appointment is being rescheduled
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+
+  // Selected new date
+  const [newDate, setNewDate] = useState("");
+
+  // Minimum date = today
+  const today = new Date().toISOString().split("T")[0];
+
+
+  const handleReschedule = (index) => {
+
+    setSelectedAppointment(index);
+
+    setNewDate("");
+
+    setShowCalendar(true);
+
+  };
+
+
+  const confirmReschedule = () => {
+
+    if (!newDate) {
+      alert("Please select a date.");
+      return;
+    }
+
+    const selectedDate = new Date(newDate);
+
+    const months = [
+      "JAN", "FEB", "MAR", "APR",
+      "MAY", "JUN", "JUL", "AUG",
+      "SEP", "OCT", "NOV", "DEC"
+    ];
+
+    const updatedAppointments = [...appointments];
+
+    updatedAppointments[selectedAppointment] = {
+      ...updatedAppointments[selectedAppointment],
+
+      month: months[selectedDate.getMonth()],
+
+      date: String(selectedDate.getDate()).padStart(2, "0")
+    };
+
+    setAppointments(updatedAppointments);
+
+    setShowCalendar(false);
+
+    alert("Appointment rescheduled successfully!");
+  };
 
 
   return (
@@ -73,6 +119,8 @@ function Appointments() {
       </p>
 
 
+      {/* TABS */}
+
       <div className="appointment-tabs">
 
         <button
@@ -81,9 +129,7 @@ function Appointments() {
               ? "tab active"
               : "tab"
           }
-          onClick={() =>
-            setTab("Upcoming")
-          }
+          onClick={() => setTab("Upcoming")}
         >
           Upcoming
         </button>
@@ -94,9 +140,7 @@ function Appointments() {
               ? "tab active"
               : "tab"
           }
-          onClick={() =>
-            setTab("Past")
-          }
+          onClick={() => setTab("Past")}
         >
           Past
         </button>
@@ -104,86 +148,106 @@ function Appointments() {
       </div>
 
 
+      {/* APPOINTMENT LIST */}
+
       <div className="appointment-list">
 
-        {appointments.map(
-          (appointment, index) => (
+        {(tab === "Upcoming"
+          ? appointments
+          : pastAppointments
+        ).map((appointment, index) => (
 
-            <div
-              className="appointment-card"
-              key={index}
-            >
+          <div
+            className="appointment-card"
+            key={index}
+          >
 
-              <div className="appointment-date">
+            {/* DATE */}
 
-                <small>
-                  {appointment.month}
-                </small>
+            <div className="appointment-date">
 
-                <strong>
-                  {appointment.date}
-                </strong>
+              <small>
+                {appointment.month}
+              </small>
 
-                <span>
-                  {appointment.time}
-                </span>
+              <strong>
+                {appointment.date}
+              </strong>
 
-              </div>
-
-
-              <div className="doctor-avatar">
-                {appointment.initials}
-              </div>
-
-
-              <div className="appointment-doctor">
-
-                <strong>
-                  {appointment.doctor}
-                </strong>
-
-                <span>
-                  {appointment.specialty}
-                </span>
-
-              </div>
-
-
-              <div className="appointment-buttons">
-
-                {tab === "Upcoming" ? (
-
-                  <>
-                    <button className="outline-btn">
-                      Reschedule
-                    </button>
-
-                    <button className="cancel-btn">
-                      Cancel
-                    </button>
-                  </>
-
-                ) : (
-
-                  <button className="outline-btn">
-
-                    <FileText size={15} />
-
-                    View Summary
-
-                  </button>
-
-                )}
-
-              </div>
+              <span>
+                {appointment.time}
+              </span>
 
             </div>
 
-          )
-        )}
+
+            {/* DOCTOR AVATAR */}
+
+            <div className="doctor-avatar">
+              {appointment.initials}
+            </div>
+
+
+            {/* DOCTOR INFO */}
+
+            <div className="appointment-doctor">
+
+              <strong>
+                {appointment.doctor}
+              </strong>
+
+              <span>
+                {appointment.specialty}
+              </span>
+
+            </div>
+
+
+            {/* BUTTONS */}
+
+            <div className="appointment-buttons">
+
+              {tab === "Upcoming" ? (
+
+                <>
+
+                  <button
+                    className="outline-btn"
+                    onClick={() =>
+                      handleReschedule(index)
+                    }
+                  >
+                    Reschedule
+                  </button>
+
+                  <button className="cancel-btn">
+                    Cancel
+                  </button>
+
+                </>
+
+              ) : (
+
+                <button className="outline-btn">
+
+                  <FileText size={15} />
+
+                  View Summary
+
+                </button>
+
+              )}
+
+            </div>
+
+          </div>
+
+        ))}
 
       </div>
 
+
+      {/* INFO BOX */}
 
       <div className="appointment-info-box">
 
@@ -196,14 +260,105 @@ function Appointments() {
           </strong>
 
           <p>
-            You can view your scheduled visits here.
-            Appointment booking functionality will
-            be added in the next evaluation.
+            You can view and reschedule your
+            upcoming visits here.
           </p>
 
         </div>
 
       </div>
+
+
+      {/* RESCHEDULE MODAL */}
+
+      {showCalendar && (
+
+        <div className="calendar-overlay">
+
+          <div className="calendar-modal">
+
+            {/* HEADER */}
+
+            <div className="calendar-modal-header">
+
+              <div>
+
+                <h2>
+                  Reschedule Appointment
+                </h2>
+
+                <p>
+                  Select a new date for your appointment.
+                </p>
+
+              </div>
+
+              <button
+                className="close-calendar"
+                onClick={() =>
+                  setShowCalendar(false)
+                }
+              >
+                <X size={20} />
+              </button>
+
+            </div>
+
+
+            {/* CALENDAR */}
+
+            <div className="calendar-box">
+
+              <Calendar size={28} />
+
+              <h3>
+                Select Appointment Date
+              </h3>
+
+              <p>
+                Past dates are not available.
+              </p>
+
+
+              <input
+                type="date"
+                min={today}
+                value={newDate}
+                onChange={(e) =>
+                  setNewDate(e.target.value)
+                }
+              />
+
+            </div>
+
+
+            {/* BUTTONS */}
+
+            <div className="calendar-actions">
+
+              <button
+                className="cancel-calendar"
+                onClick={() =>
+                  setShowCalendar(false)
+                }
+              >
+                Cancel
+              </button>
+
+              <button
+                className="confirm-calendar"
+                onClick={confirmReschedule}
+              >
+                Confirm Reschedule
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
 
     </main>
   );
