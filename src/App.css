@@ -4034,6 +4034,92 @@ button {
 
 
 /* ==========================================================================
+   DARK THEME SYSTEM (PERSISTENT LIGHT/DARK TOGGLE)
+   ========================================================================== */
+body.dark-theme, [data-theme="dark"] {
+  --bg: #0F172A;                      /* Deep Charcoal Slate Canvas */
+  --text: #F8FAFC;                    /* High Contrast White/Light Text */
+  --border: #334155;                  /* Defined Dark Borders */
+  --muted: #94A3B8;                   /* Soft Muted Text */
+  --light-blue: #1E293B;              /* Dark Sub-card Background */
+  --blue: #38BDF8;                    /* Bright Electric Cyan Blue */
+  --blue-dark: #0284C7;
+  --teal: #2DD4BF;                    /* Bright Mint Accent */
+
+  --color-deep-navy: #0F172A;
+  --color-navy-dark: #030712;
+  --color-medical-blue: #38BDF8;
+  --color-blue-hover: #0284C7;
+  --color-teal-accent: #2DD4BF;
+  --color-teal-light: #134E4A;
+  --color-teal-hover: #14B8A6;
+  --color-light-bg: #0F172A;
+  --color-white: #1E293B;             /* Dark Surface Cards */
+  --color-soft-border: #334155;
+}
+
+body.dark-theme .sidebar,
+body.dark-theme .topbar,
+body.dark-theme .stats-card,
+body.dark-theme .health-card,
+body.dark-theme .upcoming-card,
+body.dark-theme .medication-box,
+body.dark-theme .medication-row,
+body.dark-theme .health-chart-widget,
+body.dark-theme .simple-card,
+body.dark-theme .login-card,
+body.dark-theme .medication-card,
+body.dark-theme .doctor-card,
+body.dark-theme .report-card,
+body.dark-theme .prescription-card,
+body.dark-theme .pharmacy-card,
+body.dark-theme .med-footer,
+body.dark-theme .med-sidebar {
+  background-color: #1E293B !important;
+  color: #F8FAFC !important;
+  border-color: #334155 !important;
+}
+
+body.dark-theme .sidebar-brand strong,
+body.dark-theme .topbar-text h1,
+body.dark-theme .health-chart-widget h2,
+body.dark-theme .page-title,
+body.dark-theme h1, 
+body.dark-theme h2, 
+body.dark-theme h3, 
+body.dark-theme h4,
+body.dark-theme strong,
+body.dark-theme p,
+body.dark-theme span {
+  color: #F8FAFC !important;
+}
+
+body.dark-theme .sidebar-item {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .sidebar-item:hover {
+  background-color: #334155 !important;
+}
+
+body.dark-theme .sidebar-item.active {
+  background-color: #0F172A !important;
+  color: #38BDF8 !important;
+  border-left-color: #38BDF8 !important;
+}
+
+body.dark-theme .top-search {
+  background: #0F172A !important;
+  border-color: #334155 !important;
+  color: #F8FAFC !important;
+}
+
+body.dark-theme .top-search input {
+  color: #F8FAFC !important;
+}
+
+
+/* ==========================================================================
    MEDIX SPLIT-SCREEN LOGIN PAGE STYLES
    ========================================================================== */
 :root {

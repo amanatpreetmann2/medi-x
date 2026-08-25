@@ -1,5 +1,6 @@
 import React from "react";
 import logo from "../assets/logo.jpeg";
+import DarkModeToggle from "./DarkModeToggle";
 import {
   Bell,
   Menu,
@@ -35,6 +36,9 @@ function Topbar({ user }) {
       </div>
 
       <div className="topbar-right">
+        {/* Dark / Light Theme Toggle Switch */}
+        <DarkModeToggle />
+
         <button className="topbar-icon" title="Notifications">
           <Bell size={20} />
         </button>

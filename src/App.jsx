@@ -16,7 +16,7 @@ import Support from "./pages/Support";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [user, setUser] = useState({ email: "patient@medix.com", name: "" });
+  const [user, setUser] = useState({ email: "patient@medix.com", name: "Patient User" });
   const [page, setPage] = useState("Dashboard");
 
   if (!loggedIn) {
@@ -49,7 +49,12 @@ function App() {
         return <Reports />;
 
       case "Settings":
-        return <Settings />;
+        return (
+          <Settings
+            user={user}
+            onUpdateUser={(newUserData) => setUser({ ...user, ...newUserData })}
+          />
+        );
 
       case "Support":
         return <Support />;
