@@ -1,5 +1,5 @@
 import React from "react";
-
+import logo from "../assets/logo.jpeg";
 import {
   Bell,
   Menu,
@@ -18,9 +18,12 @@ function Topbar() {
 
 
       <div className="topbar-brand">
-        Medix
+        <img src={logo} alt="Medi-X" />
       </div>
 
+      <div className="topbar-text">
+          <h1>Medi<span>-X</span></h1>
+      </div>
 
       <div className="top-search">
 
