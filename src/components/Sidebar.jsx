@@ -135,7 +135,7 @@ function Sidebar({ page, setPage }) {
           }
         >
 
-          <SettingsIcon size={19} />
+          <SettingsIcon size={50} />
 
           Settings
 
