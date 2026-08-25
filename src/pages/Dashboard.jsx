@@ -1,4 +1,5 @@
 import React from "react";
+import StatsCard from "../components/StatsCard";
 import healthBanner from "../assets/health-banner.jpg";
 import {
   Activity,
@@ -6,9 +7,10 @@ import {
   Check,
   FileText,
   Pill,
-  User
+  User,
+  UserRound,
+  HeartPulse
 } from "lucide-react";
-
 function Dashboard({ setPage }) {
 
   return (
@@ -27,11 +29,40 @@ function Dashboard({ setPage }) {
     `
   }}
 >
+  
   <div>
     <h1>Welcome</h1>
     <p>Here is your health overview for today.</p>
   </div>
+
+
   </div>
+  <div className="stats-container">
+
+  <StatsCard
+    title="Appointments"
+    value="12"
+    icon={<Calendar size={30} />}
+  />
+
+  <StatsCard
+    title="Doctors"
+    value="8"
+    icon={<UserRound size={30} />}
+  />
+
+  <StatsCard
+    title="Medicines"
+    value="24"
+    icon={<Pill size={30} />}
+  />
+
+  <StatsCard
+    title="Health Score"
+    value="92%"
+    icon={<HeartPulse size={30} />}
+  />
+</div>
 
       <div className="dashboard-headings">
 
