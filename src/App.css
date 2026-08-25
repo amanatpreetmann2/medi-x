@@ -115,6 +115,14 @@ button {
   font-size: 28px;
 }
 
+.stats-card {
+  cursor: pointer;
+  transition: box-shadow 0.25s ease;
+}
+
+.stats-card:hover {
+  box-shadow: 0 12px 30px rgba(37, 86, 166, 0.15);
+}
 /* =========================================
    SIDEBAR
 ========================================= */

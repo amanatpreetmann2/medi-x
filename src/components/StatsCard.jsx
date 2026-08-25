@@ -1,11 +1,18 @@
 import { motion } from "framer-motion";
 
-function StatsCard({ title, value, icon }) {
+function StatsCard({ title, value, icon, onClick }) {
   return (
     <motion.div
-      whileHover={{ scale: 1.04, y: -5 }}
+      whileHover={{
+        scale: 1.04,
+        y: -5,
+      }}
+      whileTap={{
+        scale: 0.97,
+      }}
       transition={{ duration: 0.2 }}
       className="stats-card"
+      onClick={onClick}
     >
       <div className="stats-icon">
         {icon}

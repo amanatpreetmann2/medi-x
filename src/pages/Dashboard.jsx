@@ -40,28 +40,31 @@ function Dashboard({ setPage }) {
   <div className="stats-container">
 
   <StatsCard
-    title="Appointments"
-    value="12"
-    icon={<Calendar size={30} />}
-  />
+  title="Appointments"
+  value="12"
+  icon={<Calendar size={30} />}
+  onClick={() => setPage("Appointments")}
+/>
 
   <StatsCard
-    title="Doctors"
-    value="8"
-    icon={<UserRound size={30} />}
-  />
+  title="Doctors"
+  value="8"
+  icon={<UserRound size={30} />}
+  onClick={() => setPage("Doctors")}
+/>
 
+ <StatsCard
+  title="Medicines"
+  value="24"
+  icon={<Pill size={30} />}
+  onClick={() => setPage("Medications")}
+/>
   <StatsCard
-    title="Medicines"
-    value="24"
-    icon={<Pill size={30} />}
-  />
-
-  <StatsCard
-    title="Health Score"
-    value="92%"
-    icon={<HeartPulse size={30} />}
-  />
+  title="Health Score"
+  value="92%"
+  icon={<HeartPulse size={30} />}
+  onClick={() => setPage("Reports")}
+/>
 </div>
 
       <div className="dashboard-headings">
