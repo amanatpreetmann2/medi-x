@@ -495,7 +495,6 @@ button {
 
   display: flex;
   align-items: center;
-
   color: white;
 
   background:
@@ -3461,16 +3460,23 @@ button {
   width: 28px;
   height: 28px;
   min-width: 28px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   margin-right: 18px;
+
   border: 2px solid #cbd3e0;
   border-radius: 50%;
   background: white;
   color: white;
+
   cursor: pointer;
   transition: 0.2s ease;
+
+  position: relative;
+  z-index: 10;
 }
 
 .medication-check:hover {
