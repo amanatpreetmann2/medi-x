@@ -7,7 +7,9 @@ import {
   Settings
 } from "lucide-react";
 
-function Topbar() {
+function Topbar({ user }) {
+  const userDisplay = user?.email || user?.name || "User";
+  const initials = userDisplay ? userDisplay.substring(0, 2).toUpperCase() : "MX";
 
   return (
     <header className="topbar">
@@ -16,41 +18,34 @@ function Topbar() {
         <Menu size={22} />
       </button>
 
-
       <div className="topbar-brand">
         <img src={logo} alt="Medi-X" />
       </div>
 
       <div className="topbar-text">
-          <h1>Medi<span>-X</span></h1>
+        <h1>Medi<span>-X</span></h1>
       </div>
 
       <div className="top-search">
-
         <Search size={18} />
-
         <input
           type="text"
           placeholder="Search records, doctors..."
         />
-
       </div>
 
-
       <div className="topbar-right">
-
-        <button className="topbar-icon">
+        <button className="topbar-icon" title="Notifications">
           <Bell size={20} />
         </button>
 
-        <button className="topbar-icon">
+        <button className="topbar-icon" title="Settings">
           <Settings size={20} />
         </button>
 
-        <div className="top-avatar">
-          SJ
+        <div className="top-avatar" title={userDisplay}>
+          {initials}
         </div>
-
       </div>
 
     </header>

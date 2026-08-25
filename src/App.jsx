@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./App.css";
 
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
@@ -15,13 +16,15 @@ import Support from "./pages/Support";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [user, setUser] = useState({ email: "patient@medix.com", name: "" });
   const [page, setPage] = useState("Dashboard");
 
   if (!loggedIn) {
     return (
       <Login
-        onLogin={() => {
+        onLogin={(userData) => {
           setLoggedIn(true);
+          if (userData) setUser(userData);
           setPage("Dashboard");
         }}
       />
@@ -58,24 +61,22 @@ function App() {
 
   return (
     <div className="app">
-
       <Sidebar
         page={page}
         setPage={setPage}
+        user={user}
+        onLogout={() => setLoggedIn(false)}
       />
 
       <div className="main-area">
-
-        <Topbar />
+        <Topbar user={user} />
 
         <div className="page-container">
           {renderPage()}
         </div>
 
         <Footer />
-
       </div>
-
     </div>
   );
 }
