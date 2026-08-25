@@ -10,7 +10,9 @@ import {
   Pill,
   User,
   UserRound,
-  HeartPulse
+  HeartPulse,
+  Clock,
+  Sparkles
 } from "lucide-react";
 
 function Dashboard({ setPage }) {
@@ -23,46 +25,55 @@ function Dashboard({ setPage }) {
           backgroundImage: `
             linear-gradient(
               90deg,
-              rgba(0, 50, 90, 0.8),
-              rgba(0, 50, 90, 0.15)
+              rgba(7, 83, 154, 0.85),
+              rgba(8, 123, 130, 0.45)
             ),
             url(${healthBanner})
-          `
+          `,
+          borderRadius: '16px',
+          boxShadow: '0 8px 24px rgba(7, 83, 154, 0.15)'
         }}
       >
         <div>
-          <h1>Welcome</h1>
-          <p>Here is your health overview for today.</p>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.3rem 0.75rem', background: 'rgba(255,255,255,0.2)', borderRadius: '20px', fontSize: '0.8125rem', fontWeight: 600, color: '#FFF', marginBottom: '0.75rem', backdropFilter: 'blur(8px)' }}>
+            <Sparkles size={14} /> Patient Health Overview
+          </div>
+          <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#FFFFFF', marginBottom: '0.35rem' }}>Welcome Back 👋</h1>
+          <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.9)' }}>Here is your real-time health summary for today.</p>
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Colorful Stats Cards Grid */}
       <div className="stats-container">
         <StatsCard
           title="Appointments"
           value="12"
-          icon={<Calendar size={30} />}
+          colorScheme="blue"
+          icon={<Calendar size={26} />}
           onClick={() => setPage("Appointments")}
         />
 
         <StatsCard
           title="Doctors"
           value="8"
-          icon={<UserRound size={30} />}
+          colorScheme="green"
+          icon={<UserRound size={26} />}
           onClick={() => setPage("Doctors")}
         />
 
         <StatsCard
           title="Medicines"
           value="24"
-          icon={<Pill size={30} />}
+          colorScheme="purple"
+          icon={<Pill size={26} />}
           onClick={() => setPage("Medications")}
         />
 
         <StatsCard
           title="Health Score"
           value="92%"
-          icon={<HeartPulse size={30} />}
+          colorScheme="rose"
+          icon={<HeartPulse size={26} />}
           onClick={() => setPage("Reports")}
         />
       </div>
@@ -81,49 +92,67 @@ function Dashboard({ setPage }) {
         </div>
       </div>
 
+      {/* Colorful Health Cards Grid */}
       <div className="dashboard-grid">
-        {/* Lab */}
-        <div className="health-card blue-border">
-          <div className="health-card-header">
-            <small>RECENT LAB RESULTS</small>
-            <FileText size={18} />
+        {/* Lab Results Card */}
+        <div className="health-card" style={{ borderLeft: '4px solid #0284C7', background: 'var(--color-white)', borderRadius: '14px', border: '1px solid var(--border)', borderLeftWidth: '4px', borderLeftColor: '#0284C7', padding: '18px', position: 'relative' }}>
+          <div className="health-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+            <span style={{ fontSize: '10px', fontWeight: 800, color: '#0284C7', letterSpacing: '0.05em', background: '#E0F2FE', padding: '4px 8px', borderRadius: '6px' }}>
+              RECENT LAB RESULTS
+            </span>
+            <FileText size={18} color="#0284C7" />
           </div>
-          <h3>Comprehensive Metabolic Panel</h3>
-          <span>Oct 10, 2023</span>
-          <div className="normal-status">
+          <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '8px 0 4px', color: 'var(--text)' }}>
+            Comprehensive Metabolic Panel
+          </h3>
+          <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
+            Oct 10, 2023
+          </span>
+          <div className="normal-status" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#059669', fontWeight: 700, fontSize: '12px', marginTop: '12px' }}>
             <Check size={14} /> Normal
           </div>
-          <button onClick={() => setPage("Reports")}>
+          <button
+            onClick={() => setPage("Reports")}
+            style={{ position: 'absolute', bottom: '14px', right: '14px', border: 'none', background: '#E0F2FE', color: '#0284C7', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}
+          >
             View Report
           </button>
         </div>
 
-        {/* Vaccine */}
-        <div className="health-card teal-border">
-          <div className="health-card-header">
-            <small>IMMUNIZATIONS</small>
-            <Activity size={18} />
+        {/* Vaccine Card */}
+        <div className="health-card" style={{ borderLeft: '4px solid #10B981', background: 'var(--color-white)', borderRadius: '14px', border: '1px solid var(--border)', borderLeftWidth: '4px', borderLeftColor: '#10B981', padding: '18px' }}>
+          <div className="health-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+            <span style={{ fontSize: '10px', fontWeight: 800, color: '#059669', letterSpacing: '0.05em', background: '#D1FAE5', padding: '4px 8px', borderRadius: '6px' }}>
+              IMMUNIZATIONS
+            </span>
+            <Activity size={18} color="#10B981" />
           </div>
-          <h3>Flu Vaccine</h3>
-          <span>Annual Dose</span>
-          <div className="normal-status">
+          <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '8px 0 4px', color: 'var(--text)' }}>
+            Flu Vaccine
+          </h3>
+          <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
+            Annual Dose
+          </span>
+          <div className="normal-status" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#059669', fontWeight: 700, fontSize: '12px', marginTop: '12px' }}>
             <Check size={14} /> Up to Date
           </div>
         </div>
 
-        {/* Appointment */}
-        <div className="upcoming-card">
-          <div className="upcoming-date">
-            <small>OCT</small>
-            <strong>14</strong>
+        {/* Appointment Card */}
+        <div className="upcoming-card" style={{ background: 'var(--color-white)', borderRadius: '14px', border: '1px solid var(--border)', borderLeft: '4px solid #F59E0B', padding: '18px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="upcoming-date" style={{ width: '60px', height: '65px', background: '#FEF3C7', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#D97706', flexShrink: 0 }}>
+            <small style={{ fontSize: '10px', fontWeight: 800 }}>OCT</small>
+            <strong style={{ fontSize: '24px', fontWeight: 800 }}>14</strong>
           </div>
           <div className="upcoming-info">
-            <strong>Cardiology Follow-up</strong>
-            <span>
-              <Calendar size={14} /> 10:30 AM
+            <strong style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text)' }}>
+              Cardiology Follow-up
+            </strong>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--muted)', marginTop: '4px' }}>
+              <Clock size={14} color="#D97706" /> 10:30 AM
             </span>
-            <span>
-              <User size={14} /> Dr. Alan Smith
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--muted)', marginTop: '2px' }}>
+              <User size={14} color="#0284C7" /> Dr. Alan Smith
             </span>
           </div>
         </div>
@@ -131,31 +160,36 @@ function Dashboard({ setPage }) {
 
       <h2 className="section-heading">Medications</h2>
 
-      <div className="medication-box">
-        <div className="medication-row">
-          <div className="medicine-icon blue">
+      {/* Colorful Medications Box */}
+      <div className="medication-box" style={{ background: 'var(--color-white)', borderRadius: '14px', border: '1px solid var(--border)', overflow: 'hidden' }}>
+        <div className="medication-row" style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
+          <div className="medicine-icon" style={{ width: '44px', height: '44px', borderRadius: '50%', background: '#D1FAE5', color: '#059669', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <Pill size={20} />
           </div>
-          <div className="medicine-details">
-            <strong>Lisinopril (10mg)</strong>
-            <span>1 tablet daily, Morning</span>
+          <div className="medicine-details" style={{ flex: 1 }}>
+            <strong style={{ fontSize: '14px', color: 'var(--text)' }}>Lisinopril (10mg)</strong>
+            <span style={{ fontSize: '12px', color: 'var(--muted)' }}>1 tablet daily, Morning</span>
           </div>
-          <span className="taken-badge">Taken</span>
-          <div className="circle-check">
-            <Check size={15} />
+          <span className="taken-badge" style={{ background: '#D1FAE5', color: '#047857', fontWeight: 700, fontSize: '11px', padding: '5px 14px', borderRadius: '20px' }}>
+            Taken
+          </span>
+          <div className="circle-check" style={{ width: '30px', height: '30px', borderRadius: '50%', background: '#059669', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Check size={16} />
           </div>
         </div>
 
-        <div className="medication-row">
-          <div className="medicine-icon blue">
+        <div className="medication-row" style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '16px 20px' }}>
+          <div className="medicine-icon" style={{ width: '44px', height: '44px', borderRadius: '50%', background: '#E0E7FF', color: '#4338CA', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <Pill size={20} />
           </div>
-          <div className="medicine-details">
-            <strong>Atorvastatin (20mg)</strong>
-            <span>1 tablet daily, Evening</span>
+          <div className="medicine-details" style={{ flex: 1 }}>
+            <strong style={{ fontSize: '14px', color: 'var(--text)' }}>Atorvastatin (20mg)</strong>
+            <span style={{ fontSize: '12px', color: 'var(--muted)' }}>1 tablet daily, Evening</span>
           </div>
-          <span className="upcoming-badge">Upcoming</span>
-          <div className="empty-circle"></div>
+          <span className="upcoming-badge" style={{ background: '#E0E7FF', color: '#4338CA', fontWeight: 700, fontSize: '11px', padding: '5px 14px', borderRadius: '20px' }}>
+            Upcoming
+          </span>
+          <div className="empty-circle" style={{ width: '30px', height: '30px', borderRadius: '50%', border: '2px solid #C7D2FE' }}></div>
         </div>
       </div>
     </main>
