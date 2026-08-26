@@ -17,11 +17,40 @@ import Settings from "./pages/Settings";
 import Support from "./pages/Support";
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [user, setUser] = useState({ email: "patient@medix.com", name: "Patient User" });
-  const [page, setPage] = useState("Dashboard");
+  // Clear any legacy localStorage keys if present
+  if (typeof window !== "undefined" && localStorage.getItem("medix_loggedIn")) {
+    localStorage.removeItem("medix_loggedIn");
+    localStorage.removeItem("medix_user");
+    localStorage.removeItem("medix_page");
+  }
+
+  const [loggedIn, setLoggedIn] = useState(() => {
+    return sessionStorage.getItem("medix_loggedIn") === "true";
+  });
+
+  const [user, setUser] = useState(() => {
+    const saved = sessionStorage.getItem("medix_user");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error("Failed to parse saved user", e);
+      }
+    }
+    return { email: "patient@medix.com", name: "Patient User" };
+  });
+
+  const [page, setPage] = useState(() => {
+    return sessionStorage.getItem("medix_page") || "Dashboard";
+  });
+
   const [toast, setToast] = useState(null);
   const [isBookModalOpen, setIsBookModalOpen] = useState(false);
+
+  const navigateToPage = (newPage) => {
+    setPage(newPage);
+    sessionStorage.setItem("medix_page", newPage);
+  };
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
@@ -29,9 +58,28 @@ function App() {
 
   const handleLogin = (userData) => {
     setLoggedIn(true);
-    if (userData) setUser(userData);
-    setPage("Dashboard");
+    sessionStorage.setItem("medix_loggedIn", "true");
+    if (userData) {
+      setUser(userData);
+      sessionStorage.setItem("medix_user", JSON.stringify(userData));
+    }
+    navigateToPage("Dashboard");
     showToast(`Welcome back, ${userData?.email || 'Patient'}! HIPAA session secured.`, 'success');
+  };
+
+  const handleLogout = () => {
+    setLoggedIn(false);
+    sessionStorage.removeItem("medix_loggedIn");
+    sessionStorage.removeItem("medix_user");
+    sessionStorage.removeItem("medix_page");
+    showToast("Signed out safely", "info");
+  };
+
+  const handleUpdateUser = (newUserData) => {
+    const updated = { ...user, ...newUserData };
+    setUser(updated);
+    sessionStorage.setItem("medix_user", JSON.stringify(updated));
+    showToast("Profile information updated successfully", "success");
   };
 
   const handleAppointmentConfirmed = (booking) => {
@@ -47,7 +95,7 @@ function App() {
       case "Dashboard":
         return (
           <Dashboard
-            setPage={setPage}
+            setPage={navigateToPage}
             showToast={showToast}
             onOpenBookAppointment={() => setIsBookModalOpen(true)}
           />
@@ -69,10 +117,7 @@ function App() {
         return (
           <Settings
             user={user}
-            onUpdateUser={(newUserData) => {
-              setUser({ ...user, ...newUserData });
-              showToast("Profile information updated successfully", "success");
-            }}
+            onUpdateUser={handleUpdateUser}
           />
         );
 
@@ -80,7 +125,13 @@ function App() {
         return <Support />;
 
       default:
-        return <Dashboard setPage={setPage} showToast={showToast} onOpenBookAppointment={() => setIsBookModalOpen(true)} />;
+        return (
+          <Dashboard
+            setPage={navigateToPage}
+            showToast={showToast}
+            onOpenBookAppointment={() => setIsBookModalOpen(true)}
+          />
+        );
     }
   };
 
@@ -98,12 +149,9 @@ function App() {
 
       <Sidebar
         page={page}
-        setPage={setPage}
+        setPage={navigateToPage}
         user={user}
-        onLogout={() => {
-          setLoggedIn(false);
-          showToast("Signed out safely", "info");
-        }}
+        onLogout={handleLogout}
         onOpenBookAppointment={() => setIsBookModalOpen(true)}
       />
 
