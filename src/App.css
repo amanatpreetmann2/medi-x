@@ -351,36 +351,107 @@ button {
   align-items: center;
   justify-content: flex-start;
   height: 100%;
-  padding-left: 20px;
 }
 
-.topbar-brand img {
-  width: 110px;
-  height: auto;
-  object-fit: contain;
-  display: block;
-}
-
-.topbar-text {
-  display: flex;
+.medix-brand-logo {
+  display: inline-flex;
   align-items: center;
-  height: 100%;
+  gap: 12px;
+  user-select: none;
 }
 
-.topbar-text h1 {
-  margin: 0;
-  font-family: ;
-  font-size: 34px;
+/* Light / Default SVG Logo */
+.medix-svg-fill {
+  fill: url(#medixGradLight);
+  transition: fill 0.3s ease, filter 0.3s ease;
+}
+
+.medix-svg-stroke {
+  stroke: url(#medixGradLight);
+  transition: stroke 0.3s ease, filter 0.3s ease;
+}
+
+.medix-brand-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px;
   font-weight: 900;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
+  color: #102a43;
+  text-transform: uppercase;
+  line-height: 1;
+  transition: color 0.3s ease;
+}
+
+.medix-brand-title .medix-brand-x {
+  color: #00a6a6;
+  font-weight: 950;
+}
+
+/* Explicit Light Classes */
+.medix-svg-fill-light {
+  fill: url(#medixGradLight);
+}
+.medix-svg-stroke-light {
+  stroke: url(#medixGradLight);
+}
+.medix-brand-title-light {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 2px;
   color: #102a43;
   text-transform: uppercase;
   line-height: 1;
 }
-
-.topbar-text h1 span {
+.medix-brand-title-light .medix-brand-x {
   color: #00a6a6;
   font-weight: 950;
+}
+
+/* Explicit Dark Classes */
+.medix-svg-fill-dark {
+  fill: url(#medixGradDark);
+  filter: drop-shadow(0 0 7px rgba(56, 189, 248, 0.45));
+}
+.medix-svg-stroke-dark {
+  stroke: url(#medixGradDark);
+  filter: drop-shadow(0 0 7px rgba(56, 189, 248, 0.45));
+}
+.medix-brand-title-dark {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #f8fafc;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.medix-brand-title-dark .medix-brand-x {
+  color: #2dd4bf;
+  font-weight: 950;
+}
+
+/* Theme Adaptation when dark-theme is active */
+body.dark-theme .medix-svg-fill,
+[data-theme="dark"] .medix-svg-fill {
+  fill: url(#medixGradDark);
+  filter: drop-shadow(0 0 7px rgba(56, 189, 248, 0.45));
+}
+
+body.dark-theme .medix-svg-stroke,
+[data-theme="dark"] .medix-svg-stroke {
+  stroke: url(#medixGradDark);
+  filter: drop-shadow(0 0 7px rgba(56, 189, 248, 0.45));
+}
+
+body.dark-theme .medix-brand-title,
+[data-theme="dark"] .medix-brand-title {
+  color: #f8fafc;
+}
+
+body.dark-theme .medix-brand-title .medix-brand-x,
+[data-theme="dark"] .medix-brand-title .medix-brand-x {
+  color: #2dd4bf;
 }
 
 .top-search {

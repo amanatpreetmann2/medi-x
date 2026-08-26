@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../assets/logo.jpeg";
+import MedixLogo from "./MedixLogo";
 import DarkModeToggle from "./DarkModeToggle";
 import {
   Bell,
@@ -20,11 +20,7 @@ function Topbar({ user }) {
       </button>
 
       <div className="topbar-brand">
-        <img src={logo} alt="Medi-X" />
-      </div>
-
-      <div className="topbar-text">
-        <h1>Medi<span>-X</span></h1>
+        <MedixLogo size={44} showText={true} />
       </div>
 
       <div className="top-search">
