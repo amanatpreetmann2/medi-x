@@ -4037,14 +4037,14 @@ button {
    DARK THEME SYSTEM (PERSISTENT LIGHT/DARK TOGGLE)
    ========================================================================== */
 body.dark-theme, [data-theme="dark"] {
-  --bg: #0F172A;                      /* Deep Charcoal Slate Canvas */
-  --text: #F8FAFC;                    /* High Contrast White/Light Text */
-  --border: #334155;                  /* Defined Dark Borders */
-  --muted: #94A3B8;                   /* Soft Muted Text */
-  --light-blue: #1E293B;              /* Dark Sub-card Background */
-  --blue: #38BDF8;                    /* Bright Electric Cyan Blue */
+  --bg: #0F172A;
+  --text: #F8FAFC;
+  --border: #334155;
+  --muted: #94A3B8;
+  --light-blue: #1E293B;
+  --blue: #38BDF8;
   --blue-dark: #0284C7;
-  --teal: #2DD4BF;                    /* Bright Mint Accent */
+  --teal: #2DD4BF;
 
   --color-deep-navy: #0F172A;
   --color-navy-dark: #030712;
@@ -4054,44 +4054,345 @@ body.dark-theme, [data-theme="dark"] {
   --color-teal-light: #134E4A;
   --color-teal-hover: #14B8A6;
   --color-light-bg: #0F172A;
-  --color-white: #1E293B;             /* Dark Surface Cards */
+  --color-white: #1E293B;
   --color-soft-border: #334155;
 }
 
-body.dark-theme .sidebar,
-body.dark-theme .topbar,
-body.dark-theme .stats-card,
-body.dark-theme .health-card,
-body.dark-theme .upcoming-card,
-body.dark-theme .medication-box,
-body.dark-theme .medication-row,
-body.dark-theme .health-chart-widget,
-body.dark-theme .simple-card,
-body.dark-theme .login-card,
+/* Background of entire app */
+body.dark-theme {
+  background-color: #0F172A !important;
+  color: #F8FAFC !important;
+}
+
+body.dark-theme .app,
+body.dark-theme .content,
+body.dark-theme .page-container,
+body.dark-theme .main-area,
+body.dark-theme .med-page,
+body.dark-theme .med-main,
+body.dark-theme .med-content {
+  background-color: #0F172A !important;
+  color: #F8FAFC !important;
+}
+
+/* Base Headings & Titles in Dark Mode */
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme h3,
+body.dark-theme h4,
+body.dark-theme h5,
+body.dark-theme h6,
+body.dark-theme .page-title,
+body.dark-theme .section-heading,
+body.dark-theme .dashboard-headings h2 {
+  color: #FFFFFF !important;
+}
+
+/* Subtitles & Descriptions in Dark Mode */
+body.dark-theme p,
+body.dark-theme .page-subtitle {
+  color: #CBD5E1 !important;
+}
+
+/* =========================================
+   1. APPOINTMENTS (Dark Mode)
+========================================= */
+body.dark-theme .appointment-tabs {
+  border-bottom-color: #334155 !important;
+}
+
+body.dark-theme .tab {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .tab.active {
+  color: #38BDF8 !important;
+  font-weight: 700 !important;
+}
+
+body.dark-theme .tab.active::after {
+  background: #38BDF8 !important;
+}
+
+body.dark-theme .appointment-card {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+  border-left: 4px solid #38BDF8 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.dark-theme .appointment-date {
+  border-right-color: #334155 !important;
+}
+
+body.dark-theme .appointment-date small {
+  color: #94A3B8 !important;
+  font-weight: 700 !important;
+}
+
+body.dark-theme .appointment-date strong {
+  color: #38BDF8 !important;
+}
+
+body.dark-theme .appointment-date span {
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .doctor-avatar {
+  background: #334155 !important;
+  color: #38BDF8 !important;
+  border: 1px solid #475569 !important;
+  font-weight: 700 !important;
+}
+
+body.dark-theme .appointment-doctor strong {
+  color: #FFFFFF !important;
+  font-size: 16px !important;
+}
+
+body.dark-theme .appointment-doctor span {
+  color: #94A3B8 !important;
+  font-size: 13px !important;
+}
+
+body.dark-theme .outline-btn {
+  background: #0F172A !important;
+  border: 1px solid #38BDF8 !important;
+  color: #38BDF8 !important;
+  font-weight: 600 !important;
+}
+
+body.dark-theme .outline-btn:hover {
+  background: #38BDF8 !important;
+  color: #0F172A !important;
+}
+
+body.dark-theme .cancel-btn {
+  background: #0F172A !important;
+  border: 1px solid #475569 !important;
+  color: #CBD5E1 !important;
+  font-weight: 600 !important;
+}
+
+body.dark-theme .cancel-btn:hover {
+  background: #334155 !important;
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .appointment-info-box {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+  color: #38BDF8 !important;
+}
+
+body.dark-theme .appointment-info-box strong {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .appointment-info-box p {
+  color: #94A3B8 !important;
+}
+
+/* =========================================
+   2. DOCTORS (Dark Mode)
+========================================= */
+body.dark-theme .doctor-card {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.dark-theme .doctor-card h3,
+body.dark-theme .doctor-card strong {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .doctor-card p,
+body.dark-theme .doctor-card span {
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .doctor-card .doctor-desc,
+body.dark-theme .doctor-card small {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .doctor-card button {
+  background: #0F172A !important;
+  border: 1px solid #38BDF8 !important;
+  color: #38BDF8 !important;
+}
+
+body.dark-theme .doctor-card button:hover {
+  background: #38BDF8 !important;
+  color: #0F172A !important;
+}
+
+/* =========================================
+   3. REPORTS (Dark Mode)
+========================================= */
+body.dark-theme .report-card {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.dark-theme .report-card h3,
+body.dark-theme .report-card strong {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .report-card span,
+body.dark-theme .report-card p {
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .report-card small {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .report-filter,
+body.dark-theme .report-search-box {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .pagination-btn {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .pagination-btn.active {
+  background: #38BDF8 !important;
+  color: #0F172A !important;
+}
+
+/* =========================================
+   4. MEDICATIONS (Dark Mode)
+========================================= */
 body.dark-theme .medication-card,
-body.dark-theme .doctor-card,
-body.dark-theme .report-card,
 body.dark-theme .prescription-card,
 body.dark-theme .pharmacy-card,
-body.dark-theme .med-footer,
-body.dark-theme .med-sidebar {
+body.dark-theme .med-card,
+body.dark-theme .med-box,
+body.dark-theme .medication-box,
+body.dark-theme .med-period {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+}
+
+body.dark-theme .medication-row {
+  background: #1E293B !important;
+  border-bottom: 1px solid #334155 !important;
+}
+
+body.dark-theme .medication-row strong,
+body.dark-theme .period-name strong,
+body.dark-theme .med-card strong {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .medication-row span,
+body.dark-theme .period-name span,
+body.dark-theme .med-card span {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .daily-progress {
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .progress-text {
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .progress-text strong {
+  color: #38BDF8 !important;
+}
+
+body.dark-theme .progress-track {
+  background: #334155 !important;
+}
+
+body.dark-theme .all-done {
+  background: #064E3B !important;
+  border-color: #059669 !important;
+}
+
+body.dark-theme .all-done strong {
+  color: #A7F3D0 !important;
+}
+
+body.dark-theme .all-done span {
+  color: #D1FAE5 !important;
+}
+
+/* =========================================
+   5. SETTINGS & SUPPORT (Dark Mode)
+========================================= */
+body.dark-theme .simple-card,
+body.dark-theme .support-card {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.dark-theme .setting-row {
+  border-bottom-color: #334155 !important;
+}
+
+body.dark-theme .setting-row strong,
+body.dark-theme .support-card h3 {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .setting-row span,
+body.dark-theme .support-card p {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .profile-btn,
+body.dark-theme .support-card button {
+  background: #0F172A !important;
+  border: 1px solid #38BDF8 !important;
+  color: #38BDF8 !important;
+  font-weight: 600 !important;
+}
+
+body.dark-theme .profile-btn:hover,
+body.dark-theme .support-card button:hover {
+  background: #38BDF8 !important;
+  color: #0F172A !important;
+}
+
+/* =========================================
+   6. TOPBAR & SIDEBAR (Dark Mode)
+========================================= */
+body.dark-theme .sidebar {
   background-color: #1E293B !important;
-  color: #F8FAFC !important;
-  border-color: #334155 !important;
+  border-right: 1px solid #334155 !important;
 }
 
 body.dark-theme .sidebar-brand strong,
-body.dark-theme .topbar-text h1,
-body.dark-theme .health-chart-widget h2,
-body.dark-theme .page-title,
-body.dark-theme h1, 
-body.dark-theme h2, 
-body.dark-theme h3, 
-body.dark-theme h4,
-body.dark-theme strong,
-body.dark-theme p,
-body.dark-theme span {
-  color: #F8FAFC !important;
+body.dark-theme .patient-info strong {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .sidebar-brand small,
+body.dark-theme .patient-info small {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .patient {
+  background: #0F172A !important;
+  border: 1px solid #334155 !important;
+}
+
+body.dark-theme .patient-avatar {
+  background: #334155 !important;
+  color: #38BDF8 !important;
 }
 
 body.dark-theme .sidebar-item {
@@ -4100,22 +4401,194 @@ body.dark-theme .sidebar-item {
 
 body.dark-theme .sidebar-item:hover {
   background-color: #334155 !important;
+  color: #FFFFFF !important;
 }
 
 body.dark-theme .sidebar-item.active {
   background-color: #0F172A !important;
   color: #38BDF8 !important;
-  border-left-color: #38BDF8 !important;
+  border-left: 3px solid #38BDF8 !important;
+}
+
+body.dark-theme .topbar {
+  background-color: #1E293B !important;
+  border-bottom: 1px solid #334155 !important;
+}
+
+body.dark-theme .topbar-text h1 {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .topbar-text h1 span {
+  color: #38BDF8 !important;
 }
 
 body.dark-theme .top-search {
   background: #0F172A !important;
-  border-color: #334155 !important;
-  color: #F8FAFC !important;
+  border: 1px solid #334155 !important;
 }
 
 body.dark-theme .top-search input {
-  color: #F8FAFC !important;
+  background: transparent !important;
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .top-search input::placeholder {
+  color: #64748B !important;
+}
+
+body.dark-theme .topbar-icon {
+  background: #0F172A !important;
+  border: 1px solid #334155 !important;
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .topbar-icon:hover {
+  color: #38BDF8 !important;
+  border-color: #38BDF8 !important;
+}
+
+body.dark-theme .book-appointment {
+  background: linear-gradient(135deg, #0284C7, #0369A1) !important;
+  color: #FFFFFF !important;
+}
+
+/* =========================================
+   7. DASHBOARD CARDS & VITALS CHART
+========================================= */
+body.dark-theme .stats-card {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+}
+
+body.dark-theme .stats-card p {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .stats-card h2 {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .health-card {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+}
+
+body.dark-theme .health-card h3 {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .health-card span {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .upcoming-card {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+}
+
+body.dark-theme .upcoming-card strong {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .upcoming-card span {
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .health-chart-widget {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+}
+
+body.dark-theme .health-chart-widget h2 {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .health-chart-widget p {
+  color: #94A3B8 !important;
+}
+
+/* =========================================
+   8. MODALS & FORMS (Dark Mode)
+========================================= */
+body.dark-theme .calendar-modal {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .calendar-modal h2 {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .calendar-modal p {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .close-calendar {
+  background: #334155 !important;
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .calendar-box {
+  background: #0F172A !important;
+  border: 1px solid #334155 !important;
+  color: #38BDF8 !important;
+}
+
+body.dark-theme .calendar-box h3 {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .calendar-box p {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .calendar-box input,
+body.dark-theme input,
+body.dark-theme select,
+body.dark-theme textarea {
+  background: #0F172A !important;
+  border: 1px solid #334155 !important;
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .cancel-calendar {
+  background: #0F172A !important;
+  border: 1px solid #475569 !important;
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .confirm-calendar {
+  background: #0284C7 !important;
+  color: #FFFFFF !important;
+}
+
+/* =========================================
+   9. FOOTER (Dark Mode)
+========================================= */
+body.dark-theme footer,
+body.dark-theme .footer,
+body.dark-theme .med-footer {
+  background: #0B1120 !important;
+  border-top: 1px solid #334155 !important;
+  color: #94A3B8 !important;
+}
+
+body.dark-theme footer strong,
+body.dark-theme .footer strong,
+body.dark-theme .footer h4 {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme footer a,
+body.dark-theme .footer a {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme footer a:hover,
+body.dark-theme .footer a:hover {
+  color: #38BDF8 !important;
 }
 
 
