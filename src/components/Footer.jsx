@@ -1,4 +1,5 @@
 import React from "react";
+import MedixLogo from "./MedixLogo";
 
 import {
   HeartPulse,
@@ -15,9 +16,7 @@ function Footer() {
 
         <div className="footer-brand">
 
-          <div className="footer-logo">
-            +
-          </div>
+          <MedixLogo size={36} showText={false} darkTheme={true} />
 
           <div>
 

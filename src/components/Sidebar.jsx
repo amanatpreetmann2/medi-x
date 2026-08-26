@@ -1,4 +1,5 @@
 import React from "react";
+import MedixLogo from "./MedixLogo";
 
 import {
   Calendar,
@@ -43,9 +44,7 @@ function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
 
       {/* Logo */}
       <div className="sidebar-brand">
-        <div className="sidebar-logo">
-          +
-        </div>
+        <MedixLogo size={36} showText={false} />
         <div>
           <strong>Medix Portal</strong>
           <small>Patient Access</small>
