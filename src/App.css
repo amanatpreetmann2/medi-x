@@ -351,6 +351,13 @@ button {
   align-items: center;
   justify-content: flex-start;
   height: 100%;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.topbar-brand:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
 }
 
 .medix-brand-logo {
@@ -358,6 +365,12 @@ button {
   align-items: center;
   gap: 12px;
   user-select: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.medix-brand-logo:hover {
+  opacity: 0.92;
 }
 
 /* Light / Default SVG Logo */

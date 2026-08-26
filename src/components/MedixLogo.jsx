@@ -4,7 +4,9 @@ export default function MedixLogo({
   darkTheme = null, 
   size = 'medium', 
   showText = true, 
-  className = "" 
+  className = "",
+  onClick = null,
+  title = undefined
 }) {
   const sizeMap = {
     small: 32,
@@ -45,7 +47,15 @@ export default function MedixLogo({
   return (
     <div 
       className={`medix-brand-logo ${className}`}
-      style={{ display: 'inline-flex', alignItems: 'center', gap: '0.65rem', userSelect: 'none' }}
+      onClick={onClick}
+      title={title}
+      style={{ 
+        display: 'inline-flex', 
+        alignItems: 'center', 
+        gap: '0.65rem', 
+        userSelect: 'none',
+        cursor: onClick ? 'pointer' : 'inherit'
+      }}
     >
       <svg
         width={pixelSize}

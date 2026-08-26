@@ -156,13 +156,13 @@ function App() {
       />
 
       <div className="main-area">
-        <Topbar user={user} />
+        <Topbar user={user} setPage={setPage} onNavigateHome={() => setPage("Dashboard")} />
 
         <div className="page-container">
           {renderPage()}
         </div>
 
-        <Footer />
+        <Footer setPage={setPage} onNavigateHome={() => setPage("Dashboard")} />
       </div>
     </div>
   );

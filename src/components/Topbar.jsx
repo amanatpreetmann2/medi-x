@@ -8,9 +8,17 @@ import {
   Settings
 } from "lucide-react";
 
-function Topbar({ user }) {
+function Topbar({ user, setPage, onNavigateHome }) {
   const userDisplay = user?.email || user?.name || "User";
   const initials = userDisplay ? userDisplay.substring(0, 2).toUpperCase() : "MX";
+
+  const handleGoHome = () => {
+    if (onNavigateHome) {
+      onNavigateHome();
+    } else if (setPage) {
+      setPage("Dashboard");
+    }
+  };
 
   return (
     <header className="topbar">
@@ -19,7 +27,12 @@ function Topbar({ user }) {
         <Menu size={22} />
       </button>
 
-      <div className="topbar-brand">
+      <div 
+        className="topbar-brand" 
+        onClick={handleGoHome}
+        style={{ cursor: "pointer" }}
+        title="Go to Dashboard"
+      >
         <MedixLogo size={44} showText={true} />
       </div>
 
