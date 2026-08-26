@@ -4196,77 +4196,271 @@ body.dark-theme .appointment-info-box p {
 /* =========================================
    2. DOCTORS (Dark Mode)
 ========================================= */
+body.dark-theme .specialty-buttons button {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .specialty-buttons button.specialty-active,
+body.dark-theme .specialty-buttons button:hover {
+  background: #0284C7 !important;
+  border-color: #0284C7 !important;
+  color: #FFFFFF !important;
+}
+
 body.dark-theme .doctor-card {
   background: #1E293B !important;
   border: 1px solid #334155 !important;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
 }
 
-body.dark-theme .doctor-card h3,
-body.dark-theme .doctor-card strong {
+body.dark-theme .doctor-photo {
+  background: #334155 !important;
+  color: #38BDF8 !important;
+  border: 1px solid #475569 !important;
+}
+
+body.dark-theme .doctor-title strong {
   color: #FFFFFF !important;
 }
 
-body.dark-theme .doctor-card p,
-body.dark-theme .doctor-card span {
-  color: #CBD5E1 !important;
-}
-
-body.dark-theme .doctor-card .doctor-desc,
-body.dark-theme .doctor-card small {
-  color: #94A3B8 !important;
-}
-
-body.dark-theme .doctor-card button {
-  background: #0F172A !important;
-  border: 1px solid #38BDF8 !important;
+body.dark-theme .doctor-title span {
   color: #38BDF8 !important;
 }
 
-body.dark-theme .doctor-card button:hover {
+body.dark-theme .rating {
+  background: #451A03 !important;
+  border: 1px solid #78350F !important;
+  color: #FBBF24 !important;
+}
+
+body.dark-theme .doctor-description {
+  color: #CBD5E1 !important;
+}
+
+/* Small info boxes inside doctor cards (Next: Today / Main Campus) */
+body.dark-theme .doctor-info-row > div {
+  background: #0F172A !important;
+  border: 1px solid #334155 !important;
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .doctor-info-row > div svg {
+  color: #38BDF8 !important;
+}
+
+body.dark-theme .doctor-info-row small {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .doctor-info-row span {
+  color: #F8FAFC !important;
+}
+
+body.dark-theme .doctor-card .profile-btn {
+  background: #0F172A !important;
+  border: 1px solid #38BDF8 !important;
+  color: #38BDF8 !important;
+  font-weight: 600 !important;
+}
+
+body.dark-theme .doctor-card .profile-btn:hover {
   background: #38BDF8 !important;
   color: #0F172A !important;
+}
+
+body.dark-theme .book-now-btn {
+  background: #0284C7 !important;
+  border: 1px solid #0284C7 !important;
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .book-now-btn:hover {
+  background: #0369A1 !important;
+}
+
+body.dark-theme .urgent-care {
+  background: #0B2A4A !important;
+  border: 1px solid #1E3A8A !important;
+}
+
+body.dark-theme .urgent-care button {
+  background: #0284C7 !important;
+  color: #FFFFFF !important;
 }
 
 /* =========================================
    3. REPORTS (Dark Mode)
 ========================================= */
+/* Filter bar container */
+body.dark-theme .report-filter {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.dark-theme .report-filter label {
+  color: #CBD5E1 !important;
+}
+
+/* Search input box, Category select box, Date Range select box (remove white borders/boxes!) */
+body.dark-theme .report-input,
+body.dark-theme .report-select {
+  background: #0F172A !important;
+  border: 1px solid #334155 !important;
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .report-input:focus-within,
+body.dark-theme .report-select:focus-within {
+  border-color: #38BDF8 !important;
+}
+
+body.dark-theme .report-input svg,
+body.dark-theme .report-select svg {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .report-input input {
+  background: transparent !important;
+  border: none !important;
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .report-input input::placeholder {
+  color: #64748B !important;
+}
+
+body.dark-theme .report-select select {
+  background: transparent !important;
+  border: none !important;
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .report-select select option {
+  background: #1E293B !important;
+  color: #FFFFFF !important;
+}
+
+/* Filter button */
+body.dark-theme .filter-btn {
+  background: #0F172A !important;
+  border: 1px solid #334155 !important;
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .filter-btn:hover {
+  background: #334155 !important;
+  color: #38BDF8 !important;
+  border-color: #38BDF8 !important;
+}
+
+/* Report Cards */
 body.dark-theme .report-card {
   background: #1E293B !important;
   border: 1px solid #334155 !important;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
 }
 
-body.dark-theme .report-card h3,
-body.dark-theme .report-card strong {
-  color: #FFFFFF !important;
+body.dark-theme .report-category {
+  background: #0F172A !important;
+  border: 1px solid #334155 !important;
+  color: #38BDF8 !important;
 }
 
-body.dark-theme .report-card span,
-body.dark-theme .report-card p {
-  color: #CBD5E1 !important;
+body.dark-theme .report-status.normal-report {
+  background: #064E3B !important;
+  border: 1px solid #059669 !important;
+  color: #34D399 !important;
 }
 
-body.dark-theme .report-card small {
+body.dark-theme .report-status.review-report {
+  background: #451A03 !important;
+  border: 1px solid #D97706 !important;
+  color: #FBBF24 !important;
+}
+
+body.dark-theme .report-status.pending-report {
+  background: #1E293B !important;
+  border: 1px solid #475569 !important;
   color: #94A3B8 !important;
 }
 
-body.dark-theme .report-filter,
-body.dark-theme .report-search-box {
-  background: #1E293B !important;
-  border: 1px solid #334155 !important;
+body.dark-theme .report-card h3 {
   color: #FFFFFF !important;
 }
 
-body.dark-theme .pagination-btn {
+body.dark-theme .report-date {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .report-doctor small {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .report-doctor div {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .small-avatar {
+  background: #334155 !important;
+  color: #38BDF8 !important;
+}
+
+body.dark-theme .view-report-btn {
+  background: #0F172A !important;
+  border: 1px solid #38BDF8 !important;
+  color: #38BDF8 !important;
+  font-weight: 600 !important;
+}
+
+body.dark-theme .view-report-btn:hover {
+  background: #38BDF8 !important;
+  color: #0F172A !important;
+}
+
+body.dark-theme .processing-btn {
+  background: #0F172A !important;
+  border: 1px solid #475569 !important;
+  color: #94A3B8 !important;
+  font-weight: 600 !important;
+}
+
+body.dark-theme .download-btn {
+  background: #0F172A !important;
+  border: 1px solid #475569 !important;
+  color: #38BDF8 !important;
+}
+
+body.dark-theme .download-btn:hover {
+  background: #334155 !important;
+  color: #FFFFFF !important;
+  border-color: #38BDF8 !important;
+}
+
+/* Pagination */
+body.dark-theme .pagination button {
   background: #1E293B !important;
   border: 1px solid #334155 !important;
   color: #CBD5E1 !important;
 }
 
-body.dark-theme .pagination-btn.active {
-  background: #38BDF8 !important;
-  color: #0F172A !important;
+body.dark-theme .pagination button:hover:not(:disabled) {
+  background: #334155 !important;
+  color: #38BDF8 !important;
+  border-color: #38BDF8 !important;
+}
+
+body.dark-theme .pagination button.current-page {
+  background: #0284C7 !important;
+  border-color: #0284C7 !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+}
+
+body.dark-theme .pagination span {
+  color: #94A3B8 !important;
 }
 
 /* =========================================
