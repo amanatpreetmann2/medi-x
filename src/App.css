@@ -4272,6 +4272,71 @@ body.dark-theme .pagination-btn.active {
 /* =========================================
    4. MEDICATIONS (Dark Mode)
 ========================================= */
+body.dark-theme .medications-content,
+body.dark-theme .med-page,
+body.dark-theme .med-content,
+body.dark-theme .med-main,
+body.dark-theme .medication-layout {
+  background: #0F172A !important;
+  color: #F8FAFC !important;
+}
+
+body.dark-theme .medication-page-header h1 {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .medication-page-header p {
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .medication-date h2 {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .medication-date span {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .date-arrow {
+  color: #94A3B8 !important;
+  background: transparent !important;
+}
+
+body.dark-theme .date-arrow:hover {
+  background: #1E293B !important;
+  color: #38BDF8 !important;
+}
+
+body.dark-theme .daily-progress-header {
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .daily-progress-header strong {
+  color: #38BDF8 !important;
+}
+
+body.dark-theme .daily-progress-bar {
+  background: #334155 !important;
+}
+
+body.dark-theme .daily-progress-fill {
+  background: #0D9488 !important;
+}
+
+body.dark-theme .time-period {
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .sun-icon {
+  background: #1E293B !important;
+  border: 1px solid #334155 !important;
+  color: #38BDF8 !important;
+}
+
+body.dark-theme .time-heading h3 {
+  color: #FFFFFF !important;
+}
+
 body.dark-theme .medication-card,
 body.dark-theme .prescription-card,
 body.dark-theme .pharmacy-card,
@@ -4281,6 +4346,96 @@ body.dark-theme .medication-box,
 body.dark-theme .med-period {
   background: #1E293B !important;
   border: 1px solid #334155 !important;
+}
+
+body.dark-theme .medication-card {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+}
+
+body.dark-theme .medication-details h3 {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .medication-details p {
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .medication-card-time {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .medication-check {
+  background: #0F172A !important;
+  border-color: #475569 !important;
+}
+
+body.dark-theme .medication-check.checked {
+  background: #0D9488 !important;
+  border-color: #0D9488 !important;
+}
+
+body.dark-theme .upcoming-label {
+  background: #1E3A5F !important;
+  color: #38BDF8 !important;
+}
+
+body.dark-theme .taken-label {
+  background: #134E4A !important;
+  color: #2DD4BF !important;
+}
+
+body.dark-theme .prescriptions-heading h2 {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .prescriptions-heading button {
+  color: #38BDF8 !important;
+}
+
+body.dark-theme .prescription-top strong {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .prescription-top svg {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .prescription-card p {
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .prescription-bottom span {
+  color: #94A3B8 !important;
+}
+
+body.dark-theme .prescription-bottom button {
+  background: #0F172A !important;
+  border: 1px solid #38BDF8 !important;
+  color: #38BDF8 !important;
+}
+
+body.dark-theme .prescription-bottom button:hover {
+  background: #38BDF8 !important;
+  color: #0F172A !important;
+}
+
+body.dark-theme .pharmacy-icon {
+  background: #334155 !important;
+  color: #38BDF8 !important;
+}
+
+body.dark-theme .pharmacy-info strong {
+  color: #FFFFFF !important;
+}
+
+body.dark-theme .pharmacy-info span {
+  color: #CBD5E1 !important;
+}
+
+body.dark-theme .adherence-card {
+  background: #0B2A4A !important;
+  border: 1px solid #1E3A8A !important;
+  color: #FFFFFF !important;
 }
 
 body.dark-theme .medication-row {
