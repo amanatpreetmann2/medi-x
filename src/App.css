@@ -5153,8 +5153,10 @@ body.dark-theme .footer a:hover {
 .hero-title span {
   color: #38BDF8;
   background: linear-gradient(135deg, #38BDF8 0%, #2DD4BF 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 .hero-subtitle {
@@ -5676,6 +5678,3 @@ body.dark-theme .side-card:hover {
     margin-bottom: 1.5rem !important;
   }
 }
-
-
-

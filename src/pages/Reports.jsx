@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ReportDetailsModal from "../components/ReportDetailsModal";
 
 import {
   Activity,
@@ -11,7 +12,7 @@ import {
   Search
 } from "lucide-react";
 
-function Reports() {
+function Reports({ showToast }) {
 
   const [category, setCategory] =
     useState("All Categories");
@@ -19,6 +20,10 @@ function Reports() {
   // Current page
   const [currentPage, setCurrentPage] =
     useState(1);
+
+  // Selected report for details modal
+  const [selectedReport, setSelectedReport] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
 
   // All demo reports
@@ -366,24 +371,33 @@ function Reports() {
                       : "view-report-btn"
                   }
                   onClick={() => {
-                    if (report.status !== "PENDING") {
-                      window.print();
+                    if (report.status === "PENDING") {
+                      if (showToast) {
+                        showToast("This diagnostic test is currently being processed by the laboratory. Expected turnaround: 24h.", "info");
+                      }
+                    } else {
+                      setSelectedReport(report);
+                      setIsModalOpen(true);
                     }
                   }}
-                  title={report.status !== "PENDING" ? "Print or Export Diagnostic Report to PDF" : "Report is currently processing"}
+                  title={report.status !== "PENDING" ? "View Full Lab Report Details" : "Report is currently processing"}
                 >
 
                   {report.status === "PENDING"
                     ? "Processing"
-                    : "View / Print Report"}
+                    : "View Report"}
 
                 </button>
 
 
                 <button 
                   className="download-btn"
-                  onClick={() => window.print()}
-                  title="Download / Print PDF Report"
+                  title="Download Report PDF"
+                  onClick={() => {
+                    if (showToast) {
+                      showToast(`Downloading official PDF copy of ${report.title}...`, "success");
+                    }
+                  }}
                 >
 
                   <Download size={17} />
@@ -481,6 +495,18 @@ function Reports() {
         </button>
 
       </div>
+
+      {/* Interactive Report Details Modal */}
+      <ReportDetailsModal
+        report={selectedReport}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onDownload={(rep) => {
+          if (showToast) {
+            showToast(`Official Lab PDF for ${rep.title} downloaded.`, 'success');
+          }
+        }}
+      />
 
     </main>
 
