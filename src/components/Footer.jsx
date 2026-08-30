@@ -7,14 +7,23 @@ import {
   Phone
 } from "lucide-react";
 
-function Footer() {
+function Footer({ setPage, onNavigateHome }) {
+  const handleGoHome = () => {
+    if (onNavigateHome) onNavigateHome();
+    else if (setPage) setPage("Dashboard");
+  };
 
   return (
     <footer className="portal-footer">
 
       <div className="footer-main">
 
-        <div className="footer-brand">
+        <div 
+          className="footer-brand"
+          onClick={handleGoHome}
+          style={{ cursor: "pointer" }}
+          title="Go to Dashboard"
+        >
 
           <MedixLogo size={36} showText={false} darkTheme={true} />
 
@@ -35,10 +44,10 @@ function Footer() {
 
           <h4>Quick Links</h4>
 
-          <span>Dashboard</span>
-          <span>Appointments</span>
-          <span>Doctors</span>
-          <span>Reports</span>
+          <span style={{ cursor: "pointer" }} onClick={() => setPage && setPage("Dashboard")}>Dashboard</span>
+          <span style={{ cursor: "pointer" }} onClick={() => setPage && setPage("Appointments")}>Appointments</span>
+          <span style={{ cursor: "pointer" }} onClick={() => setPage && setPage("Doctors")}>Doctors</span>
+          <span style={{ cursor: "pointer" }} onClick={() => setPage && setPage("Reports")}>Reports</span>
 
         </div>
 

@@ -43,7 +43,12 @@ function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
     <aside className="sidebar">
 
       {/* Logo */}
-      <div className="sidebar-brand">
+      <div 
+        className="sidebar-brand"
+        onClick={() => setPage && setPage("Dashboard")}
+        style={{ cursor: "pointer" }}
+        title="Go to Dashboard"
+      >
         <MedixLogo size={36} showText={false} />
         <div>
           <strong>Medix Portal</strong>
