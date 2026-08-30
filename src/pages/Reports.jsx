@@ -365,16 +365,26 @@ function Reports() {
                       ? "processing-btn"
                       : "view-report-btn"
                   }
+                  onClick={() => {
+                    if (report.status !== "PENDING") {
+                      window.print();
+                    }
+                  }}
+                  title={report.status !== "PENDING" ? "Print or Export Diagnostic Report to PDF" : "Report is currently processing"}
                 >
 
                   {report.status === "PENDING"
                     ? "Processing"
-                    : "View Report"}
+                    : "View / Print Report"}
 
                 </button>
 
 
-                <button className="download-btn">
+                <button 
+                  className="download-btn"
+                  onClick={() => window.print()}
+                  title="Download / Print PDF Report"
+                >
 
                   <Download size={17} />
 

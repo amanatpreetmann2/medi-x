@@ -5649,4 +5649,35 @@ body.dark-theme .side-card:hover {
   border-color: rgba(2, 132, 199, 0.35) !important;
 }
 
+/* =========================================
+   CLEAN PRINT / PDF EXPORT FORMATTING
+========================================= */
+@media print {
+  .sidebar,
+  .topbar,
+  .footer,
+  .report-filter,
+  .pagination,
+  .mobile-menu,
+  .report-actions button {
+    display: none !important;
+  }
+
+  body, .app, .main-area, .content {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  .report-card {
+    page-break-inside: avoid;
+    border: 1px solid #CBD5E1 !important;
+    box-shadow: none !important;
+    margin-bottom: 1.5rem !important;
+  }
+}
+
+
 
