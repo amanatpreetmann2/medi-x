@@ -5617,3 +5617,36 @@ body.dark-theme .footer a:hover {
   .login-card-title { font-size: 1.5rem; }
 }
 
+/* =========================================
+   CARD MICRO-HOVER LIFT (Smooth SaaS Feel)
+========================================= */
+.stats-card,
+.appointment-card,
+.doctor-card,
+.report-card,
+.medication-card,
+.side-card {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease !important;
+}
+
+.stats-card:hover,
+.appointment-card:hover,
+.doctor-card:hover,
+.report-card:hover,
+.medication-card:hover,
+.side-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 28px rgba(7, 83, 154, 0.14) !important;
+}
+
+body.dark-theme .stats-card:hover,
+body.dark-theme .appointment-card:hover,
+body.dark-theme .doctor-card:hover,
+body.dark-theme .report-card:hover,
+body.dark-theme .medication-card:hover,
+body.dark-theme .side-card:hover {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45) !important;
+  border-color: rgba(2, 132, 199, 0.35) !important;
+}
+
+
