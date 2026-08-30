@@ -108,10 +108,15 @@ function App() {
         return <Medications />;
 
       case "Doctors":
-        return <Doctors />;
+        return (
+          <Doctors 
+            onOpenBookAppointment={(doctorName) => setIsBookModalOpen(true)}
+            showToast={showToast}
+          />
+        );
 
       case "Reports":
-        return <Reports />;
+        return <Reports showToast={showToast} />;
 
       case "Settings":
         return (

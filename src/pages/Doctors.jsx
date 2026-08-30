@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import DoctorProfileModal from "../components/DoctorProfileModal";
 
 import {
   Calendar,
@@ -8,7 +9,18 @@ import {
   Video
 } from "lucide-react";
 
-function Doctors() {
+function Doctors({ onOpenBookAppointment, showToast }) {
+  const [selectedSpecialty, setSelectedSpecialty] = useState("All Specialties");
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+
+  const specialties = [
+    "All Specialties",
+    "Cardiology",
+    "Neurology",
+    "Pediatrics",
+    "Orthopedics"
+  ];
 
   const doctors = [
     {
@@ -19,7 +31,10 @@ function Doctors() {
       description:
         "Specializing in preventive cardiology and heart failure management with personalized care.",
       next: "Today",
-      location: "Main Campus"
+      location: "Main Campus",
+      experience: "14+ Years Experience",
+      education: "MD, Johns Hopkins University • Fellowship at Mayo Clinic",
+      languages: "English, Spanish"
     },
 
     {
@@ -30,7 +45,10 @@ function Doctors() {
       description:
         "Expert in movement disorders and neurodegenerative diseases with patient-centered care.",
       next: "Thu",
-      location: "Telehealth"
+      location: "Telehealth",
+      experience: "11+ Years Experience",
+      education: "MD, Stanford School of Medicine • Neurology Residency UCSF",
+      languages: "English, Mandarin"
     },
 
     {
@@ -41,7 +59,10 @@ function Doctors() {
       description:
         "Dedicated to compassionate care for children from newborns to adolescents.",
       next: "Tomorrow",
-      location: "Westside Clinic"
+      location: "Westside Clinic",
+      experience: "9+ Years Experience",
+      education: "MD, Columbia University • Pediatric Residency at Boston Children's",
+      languages: "English, Spanish"
     },
 
     {
@@ -52,10 +73,29 @@ function Doctors() {
       description:
         "Focuses on sports injuries, joint replacement and minimally invasive procedures.",
       next: "Mon",
-      location: "Main Campus"
+      location: "Main Campus",
+      experience: "16+ Years Experience",
+      education: "MD, Harvard Medical School • Orthopedic Fellowship HSS New York",
+      languages: "English"
     }
   ];
 
+  const filteredDoctors = selectedSpecialty === "All Specialties"
+    ? doctors
+    : doctors.filter(doc => doc.specialty.toLowerCase() === selectedSpecialty.toLowerCase());
+
+  const handleOpenProfile = (doc) => {
+    setSelectedDoctor(doc);
+    setIsProfileModalOpen(true);
+  };
+
+  const handleBookDoctor = (doc) => {
+    if (onOpenBookAppointment) {
+      onOpenBookAppointment(doc?.name || "Doctor");
+    } else if (showToast) {
+      showToast(`Opening scheduler for ${doc?.name || 'physician'}...`, "info");
+    }
+  };
 
   return (
     <main className="content">
@@ -71,33 +111,21 @@ function Doctors() {
 
 
       <div className="specialty-buttons">
-
-        <button className="specialty-active">
-          All Specialties
-        </button>
-
-        <button>
-          Cardiology
-        </button>
-
-        <button>
-          Neurology
-        </button>
-
-        <button>
-          Pediatrics
-        </button>
-
-        <button>
-          Orthopedics
-        </button>
-
+        {specialties.map((spec) => (
+          <button
+            key={spec}
+            className={selectedSpecialty === spec ? "specialty-active" : ""}
+            onClick={() => setSelectedSpecialty(spec)}
+          >
+            {spec}
+          </button>
+        ))}
       </div>
 
 
       <div className="doctors-layout">
 
-        {doctors.map(
+        {filteredDoctors.map(
           (doctor) => (
 
             <div
@@ -176,11 +204,17 @@ function Doctors() {
 
               <div className="doctor-card-buttons">
 
-                <button className="profile-btn">
+                <button 
+                  className="profile-btn"
+                  onClick={() => handleOpenProfile(doctor)}
+                >
                   View Profile
                 </button>
 
-                <button className="book-now-btn">
+                <button 
+                  className="book-now-btn"
+                  onClick={() => handleBookDoctor(doctor)}
+                >
                   Book Now
                 </button>
 
@@ -207,7 +241,13 @@ function Doctors() {
             on-call physician immediately.
           </p>
 
-          <button>
+          <button
+            onClick={() => {
+              if (showToast) {
+                showToast("Connecting with on-call urgent care telehealth physician... Estimated queue: 1 min", "info");
+              }
+            }}
+          >
 
             <Video size={16} />
 
@@ -218,6 +258,14 @@ function Doctors() {
         </div>
 
       </div>
+
+      {/* Interactive Doctor Profile Modal */}
+      <DoctorProfileModal
+        doctor={selectedDoctor}
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        onBookNow={(doc) => handleBookDoctor(doc)}
+      />
 
     </main>
   );
