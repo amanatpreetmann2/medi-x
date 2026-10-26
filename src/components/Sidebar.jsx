@@ -12,7 +12,7 @@ import {
   LogOut
 } from "lucide-react";
 
-function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
+function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment, isOpen = false, onClose }) {
   const userDisplay = user?.email || user?.name || "patient@medix.com";
   const initials = userDisplay ? userDisplay.substring(0, 2).toUpperCase() : "MX";
 
@@ -40,7 +40,7 @@ function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
   ];
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar${isOpen ? " mobile-open" : ""}`} aria-label="Main navigation">
 
       {/* Logo */}
       <div 
@@ -96,7 +96,7 @@ function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
                 ? "sidebar-item active"
                 : "sidebar-item"
             }
-            onClick={() => setPage(item.name)}
+            onClick={() => { setPage(item.name); onClose && onClose(); }}
           >
             {item.icon}
             <span>{item.name}</span>
@@ -112,7 +112,7 @@ function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
               ? "sidebar-item active"
               : "sidebar-item"
           }
-          onClick={() => setPage("Settings")}
+          onClick={() => { setPage("Settings"); onClose && onClose(); }}
         >
           <SettingsIcon size={19} />
           <span>Settings</span>
@@ -124,7 +124,7 @@ function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
               ? "sidebar-item active"
               : "sidebar-item"
           }
-          onClick={() => setPage("Support")}
+          onClick={() => { setPage("Support"); onClose && onClose(); }}
         >
           <CircleHelp size={19} />
           <span>Support</span>
@@ -134,7 +134,7 @@ function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
           <button
             className="sidebar-item"
             style={{ color: '#dc2626', marginTop: '0.5rem' }}
-            onClick={onLogout}
+            onClick={() => { onLogout(); onClose && onClose(); }}
           >
             <LogOut size={19} />
             <span>Sign Out</span>
