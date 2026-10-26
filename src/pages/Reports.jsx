@@ -9,8 +9,10 @@ import {
   ChevronRight,
   Download,
   Filter,
-  Search
+  Search,
+  FileText
 } from "lucide-react";
+import PageHeader from "../components/PageHeader";
 
 function Reports({ showToast }) {
 
@@ -181,14 +183,12 @@ function Reports({ showToast }) {
 
     <main className="content">
 
-      <h1 className="page-title">
-        Health Reports
-      </h1>
-
-      <p className="page-subtitle">
-        Access your laboratory results, diagnostic reports
-        and medical records securely.
-      </p>
+      <PageHeader
+        badge="Laboratory & Diagnostic Records"
+        badgeIcon={FileText}
+        title="My Health Records"
+        subtitle="Access your laboratory results, diagnostic reports and medical records securely."
+      />
 
 
       {/* FILTER SECTION */}

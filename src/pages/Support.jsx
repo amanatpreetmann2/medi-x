@@ -2,22 +2,21 @@ import React from "react";
 
 import {
   CircleHelp,
-  Mail
+  Mail,
+  LifeBuoy
 } from "lucide-react";
+import PageHeader from "../components/PageHeader";
 
 function Support() {
 
   return (
     <main className="content">
-
-      <h1 className="page-title">
-        Support
-      </h1>
-
-      <p className="page-subtitle">
-        Need help? We're here to assist you.
-      </p>
-
+      <PageHeader
+        badge="Help & Customer Service"
+        badgeIcon={LifeBuoy}
+        title="Support & Assistance"
+        subtitle="Need help navigating your portal or accessing care? Our healthcare support team is here to assist you."
+      />
 
       <div className="support-grid">
 

@@ -14,6 +14,8 @@
   --text: #20242c;
   --muted: #626a78;
   --teal: #087b82;
+  --color-card-bg: #ffffff;
+  --color-subtle-bg: #f8fafc;
 }
 
 body {
@@ -44,23 +46,31 @@ button {
 
 .app {
   min-height: 100vh;
-
   display: flex;
-
-  background: var(--bg);
+  background: #f1f5f9;
+  padding: 16px;
+  gap: 20px;
+  box-sizing: border-box;
 }
 
 .main-area {
   min-width: 0;
   flex: 1;
-
   display: flex;
   flex-direction: column;
+  gap: 16px;
 }
 
 @media (max-width: 1100px) {
   .stats-container {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .app {
+    padding: 0;
+    gap: 0;
   }
 }
 
@@ -71,6 +81,11 @@ button {
 }
 .page-container {
   flex: 1;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);
+  overflow: hidden;
 }
 
 .stats-container {
@@ -129,17 +144,20 @@ button {
 ========================================= */
 
 .sidebar {
-  width: 210px;
-  min-height: 100vh;
-
+  width: 250px;
+  min-height: calc(100vh - 32px);
+  height: calc(100vh - 32px);
+  position: sticky;
+  top: 16px;
   background: white;
-
-  border-right: 1px solid var(--border);
-
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
   display: flex;
   flex-direction: column;
-
   flex-shrink: 0;
+  overflow-y: auto;
+  z-index: 10;
 }
 
 .sidebar-brand {
@@ -332,18 +350,16 @@ button {
 ========================================= */
 
 .topbar {
-  height: 110px;
-
+  height: 80px;
   background: white;
-
-  border-bottom: 1px solid var(--border);
-
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);
   display: flex;
   align-items: center;
-
-  gap: 40px;
-
-  padding: 0 28px;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 24px;
 }
 
 .topbar-brand {
@@ -536,31 +552,141 @@ body.dark-theme .medix-brand-title .medix-brand-x,
 
 
 /* =========================================
-   CONTENT
+   CONTENT & UNIFIED PAGE SPACING SYSTEM
 ========================================= */
 
-.content {
+.content,
+.page-main-content {
   width: 100%;
-
   max-width: 1250px;
-
   padding: 32px 34px 42px;
+  box-sizing: border-box;
+}
+
+/* Page Header Structure */
+.medix-page-header {
+  margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+.medix-page-header-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.medix-page-header-text {
+  flex: 1;
+  min-width: 280px;
+}
+
+.medix-page-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--teal, #00A896);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 12px; /* 12px space between badge and heading */
+}
+
+.medix-page-badge svg {
+  flex-shrink: 0;
+}
+
+.medix-page-title {
+  margin: 0 0 10px 0; /* 10px space between heading and subtitle */
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--text, #0F172A);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.medix-page-subtitle {
+  margin: 0;
+  color: var(--muted, #64748B);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  max-width: 820px;
+}
+
+.medix-page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.medix-page-header-bottom {
+  margin-top: 24px;
+}
+
+/* Consistent Tab Dividers & Horizontal Separators */
+.medix-tabs-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 28px 0; /* 28px above and 28px below */
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border, #E2E8F0);
+  flex-wrap: wrap;
+}
+
+.medix-horizontal-divider {
+  height: 1px;
+  background-color: var(--border, #E2E8F0);
+  border: none;
+  margin: 28px 0; /* 28px above and 28px below */
+  width: 100%;
 }
 
 .page-title {
-  font-size: 28px;
-
-  margin-bottom: 7px;
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--text, #0F172A);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
 }
 
 .page-subtitle {
-  color: #5f6876;
+  color: var(--muted, #64748B);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  margin-bottom: 28px;
+  max-width: 820px;
+}
 
-  font-size: 13px;
+@media (max-width: 768px) {
+  .content,
+  .page-main-content {
+    padding: 20px 16px 32px;
+  }
 
-  line-height: 20px;
+  .medix-page-header {
+    margin-bottom: 22px;
+  }
 
-  margin-bottom: 24px;
+  .medix-page-title,
+  .page-title {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+
+  .medix-tabs-divider {
+    margin: 20px 0 22px 0;
+    padding-bottom: 12px;
+  }
+
+  .medix-horizontal-divider {
+    margin: 20px 0;
+  }
 }
 
 
@@ -2780,10 +2906,10 @@ body.dark-theme .medix-brand-title .medix-brand-x,
 
 .portal-footer {
   background: #102d49;
-
   color: white;
-
   margin-top: auto;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .footer-main {
@@ -3330,10 +3456,10 @@ body.dark-theme .medix-brand-title .medix-brand-x,
 
 .medications-content {
   width: 100%;
-  min-height: calc(100vh - 70px);
-  padding: 34px 38px 50px;
+  min-height: auto;
+  padding: 28px 32px 42px;
   box-sizing: border-box;
-  background: #f8f9ff;
+  background: transparent;
 }
 
 /* PAGE HEADER */
@@ -4119,10 +4245,10 @@ body.dark-theme .medix-brand-title .medix-brand-x,
    DARK THEME SYSTEM (PERSISTENT LIGHT/DARK TOGGLE)
    ========================================================================== */
 body.dark-theme, [data-theme="dark"] {
-  --bg: #0F172A;
+  --bg: #0B1120;
   --text: #F8FAFC;
   --border: #334155;
-  --muted: #94A3B8;
+  --muted: #CBD5E1;
   --light-blue: #1E293B;
   --blue: #38BDF8;
   --blue-dark: #0284C7;
@@ -4137,43 +4263,179 @@ body.dark-theme, [data-theme="dark"] {
   --color-teal-hover: #14B8A6;
   --color-light-bg: #0F172A;
   --color-white: #1E293B;
+  --color-card-bg: #1E293B;
+  --color-subtle-bg: #0F172A;
   --color-soft-border: #334155;
 }
 
 /* Background of entire app */
 body.dark-theme {
-  background-color: #0F172A !important;
+  background-color: #0B1120 !important;
   color: #F8FAFC !important;
 }
 
-body.dark-theme .app,
+body.dark-theme .app {
+  background-color: #0B1120 !important;
+  color: #F8FAFC !important;
+}
+
+body.dark-theme .page-container {
+  background-color: #1E293B !important;
+  border: 1px solid #334155 !important;
+  color: #F8FAFC !important;
+}
+
 body.dark-theme .content,
-body.dark-theme .page-container,
 body.dark-theme .main-area,
 body.dark-theme .med-page,
 body.dark-theme .med-main,
 body.dark-theme .med-content {
-  background-color: #0F172A !important;
+  background-color: transparent !important;
   color: #F8FAFC !important;
 }
 
-/* Base Headings & Titles in Dark Mode */
+/* Base Headings & Titles in Dark Mode: Crisp White */
 body.dark-theme h1,
 body.dark-theme h2,
 body.dark-theme h3,
 body.dark-theme h4,
 body.dark-theme h5,
 body.dark-theme h6,
+body.dark-theme strong,
 body.dark-theme .page-title,
+body.dark-theme .medix-page-title,
 body.dark-theme .section-heading,
 body.dark-theme .dashboard-headings h2 {
   color: #FFFFFF !important;
 }
 
-/* Subtitles & Descriptions in Dark Mode */
+/* High Contrast readable text for subtitles, paragraphs, labels in Dark Mode */
 body.dark-theme p,
-body.dark-theme .page-subtitle {
+body.dark-theme .page-subtitle,
+body.dark-theme .medix-page-subtitle,
+body.dark-theme label {
+  color: #E2E8F0 !important;
+}
+
+body.dark-theme .medix-tabs-divider {
+  border-bottom-color: #334155 !important;
+}
+
+body.dark-theme .medix-horizontal-divider {
+  background-color: #334155 !important;
+}
+
+body.dark-theme span:not([style*="color"]):not([class*="badge"]):not([class*="status"]):not([class*="tag"]) {
+  color: #E2E8F0;
+}
+
+/* Override any inline grey font colors in dark mode to bright readable silver-white */
+body.dark-theme [style*="color: #64748B"],
+body.dark-theme [style*="color:#64748B"],
+body.dark-theme [style*="color: rgb(100, 116, 139)"],
+body.dark-theme [style*="color: #475569"],
+body.dark-theme [style*="color:#475569"],
+body.dark-theme [style*="color: rgb(71, 85, 105)"],
+body.dark-theme [style*="color: #334155"],
+body.dark-theme [style*="color:#334155"],
+body.dark-theme [style*="color: rgb(51, 65, 85)"],
+body.dark-theme [style*="color: #94A3B8"],
+body.dark-theme [style*="color:#94A3B8"],
+body.dark-theme [style*="color: rgb(148, 163, 184)"],
+body.dark-theme [style*="color: #697280"],
+body.dark-theme [style*="color: #454c58"] {
   color: #CBD5E1 !important;
+}
+
+/* Headings and primary values that had dark text */
+body.dark-theme [style*="color: #0F172A"],
+body.dark-theme [style*="color:#0F172A"],
+body.dark-theme [style*="color: rgb(15, 23, 42)"],
+body.dark-theme [style*="color: #20242c"],
+body.dark-theme [style*="color: #1E293B"] {
+  color: #FFFFFF !important;
+}
+
+/* High Contrast Status Badges in Dark Mode */
+body.dark-theme [style*="background: #DCFCE7"],
+body.dark-theme [style*="background:#DCFCE7"],
+body.dark-theme [style*="background: #dcfce7"] {
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #4ADE80 !important;
+  border: 1px solid rgba(74, 222, 128, 0.35) !important;
+}
+
+body.dark-theme [style*="background: #FEE2E2"],
+body.dark-theme [style*="background:#FEE2E2"],
+body.dark-theme [style*="background: #fee2e2"] {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #F87171 !important;
+  border: 1px solid rgba(248, 113, 113, 0.35) !important;
+}
+
+body.dark-theme [style*="background: #FEF3C7"],
+body.dark-theme [style*="background:#FEF3C7"],
+body.dark-theme [style*="background: #fef3c7"] {
+  background: rgba(245, 158, 11, 0.2) !important;
+  color: #FBBF24 !important;
+  border: 1px solid rgba(251, 191, 36, 0.35) !important;
+}
+
+body.dark-theme [style*="background: #EFF6FF"],
+body.dark-theme [style*="background:#EFF6FF"],
+body.dark-theme [style*="background: #eff6ff"] {
+  background: rgba(56, 189, 248, 0.15) !important;
+  color: #38BDF8 !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+}
+
+/* Override all inline white backgrounds on cards/boxes in dark mode */
+body.dark-theme [style*="background: #FFFFFF"],
+body.dark-theme [style*="background:#FFFFFF"],
+body.dark-theme [style*="background: #ffffff"],
+body.dark-theme [style*="background:#ffffff"],
+body.dark-theme [style*="background: rgb(255, 255, 255)"],
+body.dark-theme [style*="background: white"],
+body.dark-theme [style*="background:white"] {
+  background-color: #1E293B !important;
+  border-color: #334155 !important;
+  color: #F8FAFC !important;
+}
+
+/* Override inline subtle background boxes (#F8FAFC, #F1F5F9) */
+body.dark-theme [style*="background: #F8FAFC"],
+body.dark-theme [style*="background:#F8FAFC"],
+body.dark-theme [style*="background: #f8fafc"],
+body.dark-theme [style*="background:#f8fafc"],
+body.dark-theme [style*="background: rgb(248, 250, 252)"],
+body.dark-theme [style*="background: #F1F5F9"],
+body.dark-theme [style*="background:#F1F5F9"] {
+  background-color: #0F172A !important;
+  border-color: #334155 !important;
+  color: #E2E8F0 !important;
+}
+
+/* Active card selections (e.g. #EFF6FF, #F0F7FF) */
+body.dark-theme [style*="background: #EFF6FF"],
+body.dark-theme [style*="background:#EFF6FF"],
+body.dark-theme [style*="background: #F0F7FF"],
+body.dark-theme [style*="background:#F0F7FF"] {
+  background-color: #172554 !important;
+  border-color: #38BDF8 !important;
+}
+
+/* Inputs, selects, and textareas */
+body.dark-theme input,
+body.dark-theme select,
+body.dark-theme textarea {
+  background-color: #0F172A !important;
+  color: #FFFFFF !important;
+  border-color: #475569 !important;
+}
+
+body.dark-theme input::placeholder,
+body.dark-theme textarea::placeholder {
+  color: #94A3B8 !important;
 }
 
 /* =========================================
@@ -4803,7 +5065,7 @@ body.dark-theme .support-card button:hover {
 ========================================= */
 body.dark-theme .sidebar {
   background-color: #1E293B !important;
-  border-right: 1px solid #334155 !important;
+  border: 1px solid #334155 !important;
 }
 
 body.dark-theme .sidebar-brand strong,

@@ -4,7 +4,7 @@ export default function FloatingCard({ icon: Icon, title, description, animation
   return (
     <div className={`floating-card ${animationClass}`}>
       <div className={`floating-card-icon-box ${iconColor}`}>
-        {Icon && <Icon size={22} strokeWidth={2.2} />}
+        <Icon size={22} strokeWidth={2.2} />
       </div>
       <div className="floating-card-content">
         <span className="floating-card-title">{title}</span>

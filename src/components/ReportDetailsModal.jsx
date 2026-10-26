@@ -2,22 +2,18 @@ import React from 'react';
 import {
   X,
   FileText,
-  Calendar,
-  User,
   Download,
-  Printer,
   CheckCircle2,
   AlertTriangle,
   Clock,
-  ShieldCheck,
-  Building2
+  ShieldCheck
 } from 'lucide-react';
 
 export default function ReportDetailsModal({ report, isOpen, onClose, onDownload }) {
   if (!isOpen || !report) return null;
 
   // Sample realistic biomarker metrics based on category & title
-  const getMetricsForReport = (title, category) => {
+  const getMetricsForReport = (title, _category) => {
     if (title.includes("Metabolic") || title.includes("Kidney")) {
       return [
         { test: "Fasting Blood Glucose", value: "92 mg/dL", range: "70 - 99 mg/dL", status: "Normal" },

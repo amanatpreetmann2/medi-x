@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, X, Clock, Video, UserCheck, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Calendar, X, Video, UserCheck, CheckCircle2 } from 'lucide-react';
 
 export default function BookAppointmentModal({ isOpen, onClose, onConfirm }) {
   const [specialty, setSpecialty] = useState('Cardiology');

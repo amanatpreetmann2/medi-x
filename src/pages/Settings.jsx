@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Settings as SettingsIcon } from "lucide-react";
+import PageHeader from "../components/PageHeader";
 
 function Settings({ user, onUpdateUser }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -20,13 +22,12 @@ function Settings({ user, onUpdateUser }) {
 
   return (
     <main className="content">
-      <h1 className="page-title">
-        Settings
-      </h1>
-
-      <p className="page-subtitle">
-        Manage your account and portal preferences.
-      </p>
+      <PageHeader
+        badge="Portal Configurations"
+        badgeIcon={SettingsIcon}
+        title="Settings"
+        subtitle="Manage your account preferences, credentials, and notification behaviors."
+      />
 
       <div className="simple-card">
 

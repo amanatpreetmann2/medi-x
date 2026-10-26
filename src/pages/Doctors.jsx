@@ -8,6 +8,7 @@ import {
   Stethoscope,
   Video
 } from "lucide-react";
+import PageHeader from "../components/PageHeader";
 
 function Doctors({ onOpenBookAppointment, showToast }) {
   const [selectedSpecialty, setSelectedSpecialty] = useState("All Specialties");
@@ -99,16 +100,12 @@ function Doctors({ onOpenBookAppointment, showToast }) {
 
   return (
     <main className="content">
-
-      <h1 className="page-title">
-        Find a Specialist
-      </h1>
-
-      <p className="page-subtitle doctor-subtitle">
-        Browse our network of healthcare professionals.
-        Filter by specialty, availability and patient ratings.
-      </p>
-
+      <PageHeader
+        badge="Medical Staff Directory"
+        badgeIcon={Stethoscope}
+        title="Find a Specialist"
+        subtitle="Browse our network of healthcare professionals. Filter by specialty, availability and patient ratings."
+      />
 
       <div className="specialty-buttons">
         {specialties.map((spec) => (

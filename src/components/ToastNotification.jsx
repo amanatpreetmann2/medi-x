@@ -2,6 +2,14 @@ import React, { useEffect } from 'react';
 import { CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
 
 export default function ToastNotification({ toast, onClose }) {
+  useEffect(() => {
+    if (!toast || !toast.message) return;
+    const timer = setTimeout(() => {
+      if (onClose) onClose();
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, [toast, onClose]);
+
   if (!toast || !toast.message) return null;
 
   const icons = {
@@ -9,13 +17,6 @@ export default function ToastNotification({ toast, onClose }) {
     error: <AlertCircle size={20} color="#EF4444" />,
     info: <Info size={20} color="#38BDF8" />
   };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onClose();
-    }, 4000);
-    return () => clearTimeout(timer);
-  }, [toast, onClose]);
 
   return (
     <div

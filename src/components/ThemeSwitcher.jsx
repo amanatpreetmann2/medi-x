@@ -15,7 +15,6 @@ export default function ThemeSwitcher({ currentTheme, onSelectTheme }) {
 
   const handleApplyTheme = (themeId) => {
     setActiveTheme(themeId);
-    document.documentElement.className = `theme-${themeId}`;
     if (onSelectTheme) onSelectTheme(themeId);
   };
 

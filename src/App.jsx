@@ -1,173 +1,159 @@
 import React, { useState } from "react";
-import "./App.css";
 
+// Storage & Authentication helper
+import {
+  getStoredAuth,
+  setStoredAuth,
+  clearStoredAuth,
+  saveRegisteredAccount
+} from "./utils/authStorage";
+import { getPatientById } from "./utils/hospitalStore";
+
+// Layout Components
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
 import Footer from "./components/Footer";
-import ToastNotification from "./components/ToastNotification";
-import BookAppointmentModal from "./components/BookAppointmentModal";
 
+// Pages
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Appointments from "./pages/Appointments";
 import Medications from "./pages/Medications";
 import Doctors from "./pages/Doctors";
 import Reports from "./pages/Reports";
+import Notifications from "./pages/Notifications";
+import EmailNotifications from "./pages/EmailNotifications";
+import Profile from "./pages/Profile";
+import AdminPanel from "./pages/AdminPanel";
 import Settings from "./pages/Settings";
 import Support from "./pages/Support";
 
 function App() {
-  // Clear any legacy localStorage keys if present
-  if (typeof window !== "undefined" && localStorage.getItem("medix_loggedIn")) {
-    localStorage.removeItem("medix_loggedIn");
-    localStorage.removeItem("medix_user");
-    localStorage.removeItem("medix_page");
-  }
+  // Restore authenticated session from localStorage if available
+  const initialAuth = getStoredAuth();
+  const [loggedIn, setLoggedIn] = useState(initialAuth.isLoggedIn);
+  const [user, setUser] = useState(
+    initialAuth.user || getPatientById('MX-1001')
+  );
+  const [page, setPage] = useState("Dashboard");
 
-  const [loggedIn, setLoggedIn] = useState(() => {
-    return sessionStorage.getItem("medix_loggedIn") === "true";
-  });
-
-  const [user, setUser] = useState(() => {
-    const saved = sessionStorage.getItem("medix_user");
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error("Failed to parse saved user", e);
-      }
-    }
-    return { email: "patient@medix.com", name: "Patient User" };
-  });
-
-  const [page, setPage] = useState(() => {
-    return sessionStorage.getItem("medix_page") || "Dashboard";
-  });
-
-  const [toast, setToast] = useState(null);
-  const [isBookModalOpen, setIsBookModalOpen] = useState(false);
-
-  const navigateToPage = (newPage) => {
-    setPage(newPage);
-    sessionStorage.setItem("medix_page", newPage);
-  };
-
-  const showToast = (message, type = 'success') => {
-    setToast({ message, type });
-  };
-
+  // Handle successful login (email, google, or demo)
   const handleLogin = (userData) => {
+    // If logging in with demo patient email, match full patient profile
+    const matchedPatient = getPatientById(userData.patientId) || userData;
+    const finalUser = { ...matchedPatient, ...userData };
+    setUser(finalUser);
     setLoggedIn(true);
-    sessionStorage.setItem("medix_loggedIn", "true");
-    if (userData) {
-      setUser(userData);
-      sessionStorage.setItem("medix_user", JSON.stringify(userData));
-    }
-    navigateToPage("Dashboard");
-    showToast(`Welcome back, ${userData?.email || 'Patient'}! HIPAA session secured.`, 'success');
+    setPage("Dashboard");
+    setStoredAuth(finalUser);
   };
 
+  // Handle user logout
   const handleLogout = () => {
+    clearStoredAuth();
     setLoggedIn(false);
-    sessionStorage.removeItem("medix_loggedIn");
-    sessionStorage.removeItem("medix_user");
-    sessionStorage.removeItem("medix_page");
-    showToast("Signed out safely", "info");
+    setUser(null);
   };
 
-  const handleUpdateUser = (newUserData) => {
-    const updated = { ...user, ...newUserData };
+  // Handle switching patient from Topbar Demo Switcher or Admin
+  const handleSwitchPatient = (patient) => {
+    setUser(patient);
+    setStoredAuth(patient);
+  };
+
+  // Handle user profile updates from Settings or Profile page
+  const handleUpdateUser = (updatedFields) => {
+    const updated = {
+      ...(user || {}),
+      ...updatedFields
+    };
     setUser(updated);
-    sessionStorage.setItem("medix_user", JSON.stringify(updated));
-    showToast("Profile information updated successfully", "success");
+    setStoredAuth(updated);
+    saveRegisteredAccount(updated);
   };
 
-  const handleAppointmentConfirmed = (booking) => {
-    showToast(`Appointment confirmed with ${booking.doctor} on ${booking.date} at ${booking.time}`, 'success');
-  };
-
+  // ---------------------------------------------------------------------------
+  // 1. If user is NOT logged in, show the split-screen Login page
+  // ---------------------------------------------------------------------------
   if (!loggedIn) {
-    return <Login onLogin={handleLogin} />;
+    return <Login onLogin={handleLogin} onLoginSuccess={handleLogin} />;
   }
 
+  // ---------------------------------------------------------------------------
+  // 2. Render authenticated patient portal pages based on active navigation tab
+  // ---------------------------------------------------------------------------
   const renderPage = () => {
     switch (page) {
       case "Dashboard":
-        return (
-          <Dashboard
-            setPage={navigateToPage}
-            showToast={showToast}
-            onOpenBookAppointment={() => setIsBookModalOpen(true)}
-          />
-        );
+        return <Dashboard setPage={setPage} user={user} />;
 
       case "Appointments":
-        return <Appointments />;
+        return <Appointments user={user} />;
 
       case "Medications":
-        return <Medications />;
-
-      case "Doctors":
-        return (
-          <Doctors 
-            onOpenBookAppointment={(doctorName) => setIsBookModalOpen(true)}
-            showToast={showToast}
-          />
-        );
+        return <Medications user={user} />;
 
       case "Reports":
-        return <Reports showToast={showToast} />;
+        return <Reports user={user} />;
+
+      case "Notifications":
+        return <Notifications user={user} />;
+
+      case "EmailNotifications":
+        return <EmailNotifications user={user} />;
+
+      case "Profile":
+        return <Profile user={user} onUpdateUser={handleUpdateUser} />;
+
+      case "Admin":
+        return (
+          <AdminPanel
+            onSwitchPatient={(p) => {
+              handleSwitchPatient(p);
+              setPage("Dashboard");
+            }}
+          />
+        );
+
+      case "Doctors":
+        return <Doctors user={user} />;
 
       case "Settings":
-        return (
-          <Settings
-            user={user}
-            onUpdateUser={handleUpdateUser}
-          />
-        );
+        return <Settings user={user} onUpdateUser={handleUpdateUser} />;
 
       case "Support":
-        return <Support />;
+        return <Support user={user} />;
 
       default:
-        return (
-          <Dashboard
-            setPage={navigateToPage}
-            showToast={showToast}
-            onOpenBookAppointment={() => setIsBookModalOpen(true)}
-          />
-        );
+        return <Dashboard setPage={setPage} user={user} />;
     }
   };
 
+  // ---------------------------------------------------------------------------
+  // 3. Authenticated Layout Structure
+  // ---------------------------------------------------------------------------
   return (
     <div className="app">
-      {/* Real-time Toast Alerts */}
-      <ToastNotification toast={toast} onClose={() => setToast(null)} />
-
-      {/* Interactive Appointment Scheduler Modal */}
-      <BookAppointmentModal
-        isOpen={isBookModalOpen}
-        onClose={() => setIsBookModalOpen(false)}
-        onConfirm={handleAppointmentConfirmed}
-      />
-
       <Sidebar
         page={page}
-        setPage={navigateToPage}
+        setPage={setPage}
         user={user}
         onLogout={handleLogout}
-        onOpenBookAppointment={() => setIsBookModalOpen(true)}
       />
 
       <div className="main-area">
-        <Topbar user={user} setPage={setPage} onNavigateHome={() => setPage("Dashboard")} />
+        <Topbar
+          user={user}
+          setPage={setPage}
+          onNavigateHome={() => setPage("Dashboard")}
+          onSwitchPatient={handleSwitchPatient}
+        />
 
         <div className="page-container">
           {renderPage()}
         </div>
 
-        <Footer setPage={setPage} onNavigateHome={() => setPage("Dashboard")} />
+        <Footer />
       </div>
     </div>
   );

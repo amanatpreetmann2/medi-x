@@ -3,39 +3,66 @@ import MedixLogo from "./MedixLogo";
 
 import {
   Calendar,
-  CircleHelp,
   FileText,
   Grid2X2,
   Pill,
   Settings as SettingsIcon,
-  Users,
-  LogOut
+  LogOut,
+  Bell,
+  Mail,
+  User
 } from "lucide-react";
 
 function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
-  const userDisplay = user?.email || user?.name || "patient@medix.com";
-  const initials = userDisplay ? userDisplay.substring(0, 2).toUpperCase() : "MX";
+  const userDisplayName = user?.name || (user?.email ? user.email.split('@')[0] : "Kabir Patel");
+  const userEmail = user?.email || "patient@medix.com";
+  const patientId = user?.patientId || user?.id || "MX-1001";
+
+  const initials = (() => {
+    if (user?.name) {
+      const parts = user.name.trim().split(/\s+/);
+      if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      return user.name.slice(0, 2).toUpperCase();
+    }
+    if (user?.email) return user.email.slice(0, 2).toUpperCase();
+    return "MX";
+  })();
 
   const menuItems = [
     {
+      id: "Dashboard",
       name: "Dashboard",
       icon: <Grid2X2 size={19} />
     },
     {
-      name: "Appointments",
+      id: "Appointments",
+      name: "My Appointments",
       icon: <Calendar size={19} />
     },
     {
-      name: "Medications",
+      id: "Reports",
+      name: "My Health Records",
+      icon: <FileText size={19} />
+    },
+    {
+      id: "Medications",
+      name: "My Medicines",
       icon: <Pill size={19} />
     },
     {
-      name: "Doctors",
-      icon: <Users size={19} />
+      id: "Notifications",
+      name: "Notifications",
+      icon: <Bell size={19} />
     },
     {
-      name: "Reports",
-      icon: <FileText size={19} />
+      id: "EmailNotifications",
+      name: "Email Notifications",
+      icon: <Mail size={19} />
+    },
+    {
+      id: "Profile",
+      name: "My Profile",
+      icon: <User size={19} />
     }
   ];
 
@@ -58,15 +85,43 @@ function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
 
       {/* Dynamic Patient Info */}
       <div className="patient">
-        <div className="patient-avatar">
-          {initials}
+        <div className="patient-avatar" style={{ overflow: 'hidden' }}>
+          {user?.avatar ? (
+            <img
+              src={user.avatar}
+              alt={userDisplayName}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          ) : (
+            initials
+          )}
         </div>
         <div className="patient-info" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
-          <strong style={{ wordBreak: 'break-word', fontSize: '11px' }}>
-            {userDisplay}
+          <strong style={{ wordBreak: 'break-word', fontSize: '13px' }} title={userDisplayName}>
+            {userDisplayName}
           </strong>
-          <small>
-            Patient ID: MX-9845
+          <small
+            title={userEmail}
+            style={{
+              display: 'block',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              maxWidth: '140px'
+            }}
+          >
+            {userEmail}
+          </small>
+          <small
+            style={{
+              color: 'var(--color-teal-accent, #00A896)',
+              fontSize: '10px',
+              marginTop: '2px',
+              display: 'block',
+              fontWeight: 700
+            }}
+          >
+            ID: {patientId} {user?.provider === 'google' ? '• Google' : ''}
           </small>
         </div>
       </div>
@@ -90,13 +145,13 @@ function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
       <nav className="sidebar-menu">
         {menuItems.map((item) => (
           <button
-            key={item.name}
+            key={item.id}
             className={
-              page === item.name
+              page === item.id
                 ? "sidebar-item active"
                 : "sidebar-item"
             }
-            onClick={() => setPage(item.name)}
+            onClick={() => setPage(item.id)}
           >
             {item.icon}
             <span>{item.name}</span>
@@ -118,22 +173,10 @@ function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
           <span>Settings</span>
         </button>
 
-        <button
-          className={
-            page === "Support"
-              ? "sidebar-item active"
-              : "sidebar-item"
-          }
-          onClick={() => setPage("Support")}
-        >
-          <CircleHelp size={19} />
-          <span>Support</span>
-        </button>
-
         {onLogout && (
           <button
             className="sidebar-item"
-            style={{ color: '#dc2626', marginTop: '0.5rem' }}
+            style={{ color: '#dc2626', marginTop: '0.4rem' }}
             onClick={onLogout}
           >
             <LogOut size={19} />

@@ -3,15 +3,13 @@ import {
   X,
   Star,
   Calendar,
-  Stethoscope,
   MapPin,
   Clock,
   Award,
   GraduationCap,
   Languages,
   ShieldCheck,
-  CheckCircle,
-  Video
+  CheckCircle
 } from 'lucide-react';
 
 export default function DoctorProfileModal({ doctor, isOpen, onClose, onBookNow }) {

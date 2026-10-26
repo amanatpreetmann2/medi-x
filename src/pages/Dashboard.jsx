@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import StatsCard from "../components/StatsCard";
 import HealthChart from "../components/HealthChart";
 import healthBanner from "../assets/health-banner.jpg";
@@ -9,35 +9,43 @@ import {
   FileText,
   Pill,
   User,
-  UserRound,
   HeartPulse,
   Clock,
-  Sparkles
+  Sparkles,
+  ShieldAlert,
+  ChevronRight
 } from "lucide-react";
+import { getPatientById, toggleMedicationDose } from "../utils/hospitalStore";
 
-function Dashboard({ setPage, showToast, onOpenBookAppointment }) {
-  const [medications, setMedications] = useState([
-    { id: 1, name: "Lisinopril (10mg)", schedule: "1 tablet daily, Morning", taken: true },
-    { id: 2, name: "Atorvastatin (20mg)", schedule: "1 tablet daily, Evening", taken: false }
-  ]);
+function Dashboard({ setPage, showToast, user }) {
+  const patientId = user?.patientId || user?.id || 'MX-1001';
+  const patient = getPatientById(patientId);
 
-  const toggleMedication = (id) => {
-    setMedications(prev => prev.map(med => {
-      if (med.id === id) {
-        const nextState = !med.taken;
-        if (showToast) {
-          showToast(
-            nextState
-              ? `Marked ${med.name} as TAKEN ✓`
-              : `${med.name} marked as Upcoming`,
-            'success'
-          );
-        }
-        return { ...med, taken: nextState };
-      }
-      return med;
-    }));
+  const [medications, setMedications] = useState(patient?.medications || []);
+
+  useEffect(() => {
+    const updated = getPatientById(patientId);
+    setMedications(updated?.medications || []);
+  }, [patientId]);
+
+  const toggleMed = (med) => {
+    const nextState = !med.taken;
+    const updated = toggleMedicationDose(patientId, med.id, nextState);
+    if (updated) {
+      setMedications(prev => prev.map(m => m.id === med.id ? updated : m));
+      const msg = nextState
+        ? `Marked ${med.name} as TAKEN ✓`
+        : `${med.name} marked as Pending`;
+      if (showToast) showToast(msg, 'success');
+    }
   };
+
+  // Find next upcoming appointment
+  const nextAppt = (patient?.appointments || []).find(a => a.status === 'Upcoming') || patient?.appointments?.[0];
+
+  const apptCount = (patient?.appointments || []).length;
+  const medCount = (patient?.medications || []).length;
+  const reportCount = (patient?.reports || []).length || 3;
 
   return (
     <main className="content">
@@ -48,21 +56,32 @@ function Dashboard({ setPage, showToast, onOpenBookAppointment }) {
           backgroundImage: `
             linear-gradient(
               90deg,
-              rgba(7, 83, 154, 0.85),
-              rgba(8, 123, 130, 0.45)
+              rgba(7, 83, 154, 0.88),
+              rgba(8, 123, 130, 0.65)
             ),
             url(${healthBanner})
           `,
           borderRadius: '16px',
-          boxShadow: '0 8px 24px rgba(7, 83, 154, 0.15)'
+          boxShadow: '0 8px 24px rgba(7, 83, 154, 0.15)',
+          padding: '28px 24px'
         }}
       >
         <div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.3rem 0.75rem', background: 'rgba(255,255,255,0.2)', borderRadius: '20px', fontSize: '0.8125rem', fontWeight: 600, color: '#FFF', marginBottom: '0.75rem', backdropFilter: 'blur(8px)' }}>
-            <Sparkles size={14} /> Patient Health Overview
+            <Sparkles size={14} /> Evaluation Patient: {patient?.name} (ID: {patient?.id})
           </div>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#FFFFFF', marginBottom: '0.35rem' }}>Welcome Back 👋</h1>
-          <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.9)' }}>Here is your real-time health summary for today.</p>
+          <h1 style={{ fontSize: '2.3rem', fontWeight: 800, color: '#FFFFFF', marginBottom: '0.35rem' }}>
+            Welcome Back{patient?.name ? `, ${patient.name}` : ''} 👋
+          </h1>
+          <p style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.9)', margin: '0 0 12px 0' }}>
+            Blood Group: <strong>{patient?.bloodGroup}</strong> • Age: <strong>{patient?.age} yrs</strong> • Vitals: BP {patient?.vitals?.bp}, Pulse {patient?.vitals?.pulse}
+          </p>
+
+          {/* Allergies Notice */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(239, 68, 68, 0.3)', border: '1px solid rgba(254, 202, 202, 0.5)', padding: '4px 10px', borderRadius: '8px', fontSize: '12px', color: '#FFF' }}>
+            <ShieldAlert size={14} />
+            <span>Allergies: {(patient?.knownAllergies || []).map(a => `${a.allergen} (${a.severity})`).join(', ')}</span>
+          </div>
         </div>
       </div>
 
@@ -70,34 +89,34 @@ function Dashboard({ setPage, showToast, onOpenBookAppointment }) {
       <div className="stats-container">
         <StatsCard
           title="Appointments"
-          value="12"
+          value={String(apptCount)}
           colorScheme="blue"
           icon={<Calendar size={26} />}
           onClick={() => setPage("Appointments")}
         />
 
         <StatsCard
-          title="Doctors"
-          value="8"
-          colorScheme="green"
-          icon={<UserRound size={26} />}
-          onClick={() => setPage("Doctors")}
-        />
-
-        <StatsCard
-          title="Medicines"
-          value="24"
+          title="My Medicines"
+          value={String(medCount)}
           colorScheme="purple"
           icon={<Pill size={26} />}
           onClick={() => setPage("Medications")}
         />
 
         <StatsCard
-          title="Health Score"
-          value="92%"
+          title="Health Records"
+          value={String(reportCount)}
+          colorScheme="green"
+          icon={<FileText size={26} />}
+          onClick={() => setPage("Reports")}
+        />
+
+        <StatsCard
+          title="Blood Pressure"
+          value={patient?.vitals?.bp?.split(' ')?.[0] || "120/80"}
           colorScheme="rose"
           icon={<HeartPulse size={26} />}
-          onClick={() => setPage("Reports")}
+          onClick={() => setPage("Profile")}
         />
       </div>
 
@@ -106,11 +125,11 @@ function Dashboard({ setPage, showToast, onOpenBookAppointment }) {
 
       {/* Dashboard Headings */}
       <div className="dashboard-headings">
-        <h2>Health Records</h2>
+        <h2>Health Records & Lab Status</h2>
         <div className="upcoming-heading">
-          <h2>Upcoming</h2>
+          <h2>Next Upcoming Appointment</h2>
           <button onClick={() => setPage("Appointments")}>
-            View All
+            View All ({apptCount})
           </button>
         </div>
       </div>
@@ -121,18 +140,18 @@ function Dashboard({ setPage, showToast, onOpenBookAppointment }) {
         <div className="health-card" style={{ borderLeft: '4px solid #0284C7', background: 'var(--color-white)', borderRadius: '14px', border: '1px solid var(--border)', borderLeftWidth: '4px', borderLeftColor: '#0284C7', padding: '18px', position: 'relative' }}>
           <div className="health-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
             <span style={{ fontSize: '10px', fontWeight: 800, color: '#0284C7', letterSpacing: '0.05em', background: '#E0F2FE', padding: '4px 8px', borderRadius: '6px' }}>
-              RECENT LAB RESULTS
+              LAB WORK
             </span>
             <FileText size={18} color="#0284C7" />
           </div>
           <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '8px 0 4px', color: 'var(--text)' }}>
-            Comprehensive Metabolic Panel
+            {patient?.reports?.[0]?.title || "Comprehensive Metabolic Panel"}
           </h3>
           <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
-            Oct 10, 2023
+            {patient?.reports?.[0]?.date || "Recent Lab Result"}
           </span>
           <div className="normal-status" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#059669', fontWeight: 700, fontSize: '12px', marginTop: '12px' }}>
-            <Check size={14} /> Normal
+            <Check size={14} /> {patient?.reports?.[0]?.status || "NORMAL"}
           </div>
           <button
             onClick={() => setPage("Reports")}
@@ -142,46 +161,66 @@ function Dashboard({ setPage, showToast, onOpenBookAppointment }) {
           </button>
         </div>
 
-        {/* Vaccine Card */}
+        {/* Diagnostic Imaging Card */}
         <div className="health-card" style={{ borderLeft: '4px solid #10B981', background: 'var(--color-white)', borderRadius: '14px', border: '1px solid var(--border)', borderLeftWidth: '4px', borderLeftColor: '#10B981', padding: '18px' }}>
           <div className="health-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
             <span style={{ fontSize: '10px', fontWeight: 800, color: '#059669', letterSpacing: '0.05em', background: '#D1FAE5', padding: '4px 8px', borderRadius: '6px' }}>
-              IMMUNIZATIONS
+              CLINICAL DIAGNOSTICS
             </span>
             <Activity size={18} color="#10B981" />
           </div>
           <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '8px 0 4px', color: 'var(--text)' }}>
-            Flu Vaccine
+            {patient?.reports?.[1]?.title || "Resting 12-Lead ECG"}
           </h3>
           <span style={{ fontSize: '12px', color: 'var(--muted)' }}>
-            Annual Dose
+            {patient?.reports?.[1]?.date || "Sep 2026"}
           </span>
           <div className="normal-status" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#059669', fontWeight: 700, fontSize: '12px', marginTop: '12px' }}>
-            <Check size={14} /> Up to Date
+            <Check size={14} /> Clear / Normal
           </div>
         </div>
 
         {/* Appointment Card */}
-        <div className="upcoming-card" style={{ background: 'var(--color-white)', borderRadius: '14px', border: '1px solid var(--border)', borderLeft: '4px solid #F59E0B', padding: '18px', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer' }} onClick={onOpenBookAppointment}>
-          <div className="upcoming-date" style={{ width: '60px', height: '65px', background: '#FEF3C7', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#D97706', flexShrink: 0 }}>
-            <small style={{ fontSize: '10px', fontWeight: 800 }}>OCT</small>
-            <strong style={{ fontSize: '24px', fontWeight: 800 }}>14</strong>
+        {nextAppt ? (
+          <div
+            className="upcoming-card"
+            style={{ background: 'var(--color-white)', borderRadius: '14px', border: '1px solid var(--border)', borderLeft: '4px solid #F59E0B', padding: '18px', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer' }}
+            onClick={() => setPage("Appointments")}
+          >
+            <div className="upcoming-date" style={{ width: '60px', height: '65px', background: '#FEF3C7', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#D97706', flexShrink: 0 }}>
+              <small style={{ fontSize: '10px', fontWeight: 800 }}>{nextAppt.month || 'NOV'}</small>
+              <strong style={{ fontSize: '22px', fontWeight: 800 }}>{nextAppt.day || '04'}</strong>
+            </div>
+            <div className="upcoming-info">
+              <strong style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text)' }}>
+                {nextAppt.reason}
+              </strong>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--muted)', marginTop: '4px' }}>
+                <Clock size={14} color="#D97706" /> {nextAppt.time}
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--muted)', marginTop: '2px' }}>
+                <User size={14} color="#0284C7" /> {nextAppt.doctor} ({nextAppt.specialty})
+              </span>
+            </div>
           </div>
-          <div className="upcoming-info">
-            <strong style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text)' }}>
-              Cardiology Follow-up
-            </strong>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--muted)', marginTop: '4px' }}>
-              <Clock size={14} color="#D97706" /> 10:30 AM
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--muted)', marginTop: '2px' }}>
-              <User size={14} color="#0284C7" /> Dr. Alan Smith
-            </span>
+        ) : (
+          <div style={{ background: 'var(--color-card-bg, #FFFFFF)', borderRadius: '14px', padding: '18px', border: '1px solid var(--border, #E2E8F0)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <p style={{ margin: 0, color: 'var(--muted, #64748B)', fontSize: '13px' }}>No upcoming appointments</p>
           </div>
-        </div>
+        )}
       </div>
 
-      <h2 className="section-heading">Interactive Medication Tracker</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '24px 0 12px 0' }}>
+        <h2 className="section-heading" style={{ margin: 0 }}>
+          Daily Medication Schedule ({medications.length} Prescriptions)
+        </h2>
+        <button
+          onClick={() => setPage("Medications")}
+          style={{ background: 'none', border: 'none', color: 'var(--blue, #0B4F8A)', fontWeight: 700, fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+        >
+          View 4-Slot Schedule <ChevronRight size={16} />
+        </button>
+      </div>
 
       {/* Interactive Medications Box */}
       <div className="medication-box" style={{ background: 'var(--color-white)', borderRadius: '14px', border: '1px solid var(--border)', overflow: 'hidden' }}>
@@ -191,8 +230,10 @@ function Dashboard({ setPage, showToast, onOpenBookAppointment }) {
               <Pill size={20} />
             </div>
             <div className="medicine-details" style={{ flex: 1 }}>
-              <strong style={{ fontSize: '14px', color: 'var(--text)' }}>{med.name}</strong>
-              <span style={{ fontSize: '12px', color: 'var(--muted)' }}>{med.schedule}</span>
+              <strong style={{ fontSize: '14px', color: 'var(--text)' }}>{med.name} ({med.dosage})</strong>
+              <span style={{ fontSize: '12px', color: 'var(--muted)', display: 'block' }}>
+                {med.period} at {med.time} • {med.instructions}
+              </span>
             </div>
             <span
               className="taken-badge"
@@ -205,10 +246,10 @@ function Dashboard({ setPage, showToast, onOpenBookAppointment }) {
                 borderRadius: '20px'
               }}
             >
-              {med.taken ? 'Taken' : 'Upcoming'}
+              {med.taken ? 'Taken ✓' : 'Due'}
             </span>
             <button
-              onClick={() => toggleMedication(med.id)}
+              onClick={() => toggleMed(med)}
               style={{
                 width: '32px',
                 height: '32px',

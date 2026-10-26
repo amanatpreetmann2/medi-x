@@ -1,6 +1,7 @@
 import React from "react";
 import MedixLogo from "./MedixLogo";
 import DarkModeToggle from "./DarkModeToggle";
+import DemoSwitcher from "./DemoSwitcher";
 import {
   Bell,
   Menu,
@@ -8,9 +9,24 @@ import {
   Settings
 } from "lucide-react";
 
-function Topbar({ user, setPage, onNavigateHome }) {
-  const userDisplay = user?.email || user?.name || "User";
-  const initials = userDisplay ? userDisplay.substring(0, 2).toUpperCase() : "MX";
+function Topbar({ user, setPage, onNavigateHome, onSwitchPatient }) {
+  const displayName = user?.name || user?.email || "User";
+  const patientId = user?.patientId || user?.id || "MX-1001";
+  
+  // Calculate clean 2-letter initials
+  const initials = (() => {
+    if (user?.name) {
+      const parts = user.name.trim().split(/\s+/);
+      if (parts.length >= 2) {
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      }
+      return user.name.slice(0, 2).toUpperCase();
+    }
+    if (user?.email) {
+      return user.email.slice(0, 2).toUpperCase();
+    }
+    return "MX";
+  })();
 
   const handleGoHome = () => {
     if (onNavigateHome) {
@@ -22,16 +38,15 @@ function Topbar({ user, setPage, onNavigateHome }) {
 
   return (
     <header className="topbar">
-
-      <button className="mobile-menu">
+      <button className="mobile-menu" aria-label="Toggle navigation">
         <Menu size={22} />
       </button>
 
-      <div 
-        className="topbar-brand" 
+      <div
+        className="topbar-brand"
         onClick={handleGoHome}
         style={{ cursor: "pointer" }}
-        title="Go to Dashboard"
+        title="Medix Home"
       >
         <MedixLogo size={44} showText={true} />
       </div>
@@ -40,27 +55,53 @@ function Topbar({ user, setPage, onNavigateHome }) {
         <Search size={18} />
         <input
           type="text"
-          placeholder="Search records, doctors..."
+          placeholder="Search records, medications, appointments..."
         />
       </div>
 
-      <div className="topbar-right">
+      <div className="topbar-right" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {/* Convenient Demo Patient Switcher for Presentation */}
+        <DemoSwitcher
+          currentPatientId={patientId}
+          onSwitchPatient={onSwitchPatient}
+        />
+
         {/* Dark / Light Theme Toggle Switch */}
         <DarkModeToggle />
 
-        <button className="topbar-icon" title="Notifications">
+        <button
+          className="topbar-icon"
+          title="Notifications & Reminders"
+          onClick={() => setPage && setPage("Notifications")}
+        >
           <Bell size={20} />
         </button>
 
-        <button className="topbar-icon" title="Settings">
+        <button
+          className="topbar-icon"
+          title="Account Settings"
+          onClick={() => setPage && setPage("Settings")}
+        >
           <Settings size={20} />
         </button>
 
-        <div className="top-avatar" title={userDisplay}>
-          {initials}
+        <div
+          className="top-avatar"
+          title={`${displayName} (${user?.email || 'Logged In'})`}
+          onClick={() => setPage && setPage("Profile")}
+          style={{ cursor: 'pointer', overflow: 'hidden' }}
+        >
+          {user?.avatar ? (
+            <img
+              src={user.avatar}
+              alt={displayName}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          ) : (
+            initials
+          )}
         </div>
       </div>
-
     </header>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HeartPulse, Activity, Flame, ShieldCheck, TrendingUp } from 'lucide-react';
+import { HeartPulse, ShieldCheck } from 'lucide-react';
 
 export default function HealthChart() {
   const [activeMetric, setActiveMetric] = useState('heart'); // 'heart' | 'bp' | 'glucose' | 'steps'
