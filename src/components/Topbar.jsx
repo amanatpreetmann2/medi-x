@@ -8,7 +8,7 @@ import {
   Settings
 } from "lucide-react";
 
-function Topbar({ user, setPage, onNavigateHome }) {
+function Topbar({ user, setPage, onNavigateHome, onToggleMenu, isMenuOpen = false }) {
   const userDisplay = user?.email || user?.name || "User";
   const initials = userDisplay ? userDisplay.substring(0, 2).toUpperCase() : "MX";
 
@@ -23,7 +23,7 @@ function Topbar({ user, setPage, onNavigateHome }) {
   return (
     <header className="topbar">
 
-      <button className="mobile-menu">
+      <button className="mobile-menu" type="button" aria-label="Toggle navigation menu" aria-expanded={isMenuOpen} onClick={onToggleMenu}>
         <Menu size={22} />
       </button>
 
@@ -52,7 +52,7 @@ function Topbar({ user, setPage, onNavigateHome }) {
           <Bell size={20} />
         </button>
 
-        <button className="topbar-icon" title="Settings">
+        <button className="topbar-icon" title="Settings" aria-label="Open settings" onClick={() => setPage && setPage("Settings")}>
           <Settings size={20} />
         </button>
 
