@@ -1,0 +1,234 @@
+/* Medi-X premium visual layer
+   Intentionally additive: keeps the existing component styles and behavior. */
+:root {
+  --blue: #146c78;
+  --blue-dark: #0f5661;
+  --light-blue: #e7f5f4;
+  --bg: #f3f7fa;
+  --border: #dce7ed;
+  --text: #152b3b;
+  --muted: #607586;
+  --teal: #20b8ad;
+  --color-deep-navy: #10283d;
+  --color-navy-dark: #0a1c2d;
+  --color-medical-blue: #176b83;
+  --color-blue-hover: #125a70;
+  --color-teal-accent: #26c6b7;
+  --color-teal-light: #e3f7f4;
+  --color-teal-hover: #169b92;
+  --color-light-bg: #f3f7fa;
+  --color-white: #ffffff;
+  --color-soft-border: #dce7ed;
+  --premium-shadow: 0 14px 38px rgba(16, 40, 61, .07);
+  --premium-shadow-hover: 0 20px 48px rgba(16, 40, 61, .12);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(ellipse at 85% 0%, rgba(32,184,173,.08), transparent 34rem),
+    var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select, textarea { font: inherit; }
+button { transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid rgba(32,184,173,.55);
+  outline-offset: 3px;
+}
+.app { background: transparent; }
+.main-area { min-height: 100vh; background: transparent; }
+.page-container { min-width: 0; }
+.sidebar {
+  position: sticky; top: 0; height: 100vh; min-height: 100vh;
+  width: 248px; padding-bottom: 12px;
+  background: linear-gradient(180deg, #10283d 0%, #0b2032 65%, #0a1b2b 100%);
+  border-right: 1px solid rgba(255,255,255,.07);
+  color: #e7f0f5; box-shadow: 12px 0 36px rgba(10,28,45,.06);
+  z-index: 1001; overflow-y: auto;
+}
+.sidebar-brand { height: 88px; padding: 0 22px; border-bottom: 1px solid rgba(255,255,255,.09); gap: 12px; }
+.sidebar-brand strong { color: #fff; font-size: 15px; letter-spacing: -.02em; }
+.sidebar-brand small { color: #8fa9b9; font-size: 10px; letter-spacing: .07em; text-transform: uppercase; }
+.patient { padding: 22px 18px 12px; gap: 12px; }
+.patient-avatar { width: 42px; height: 42px; background: linear-gradient(135deg,#d6f7f1,#8edbd2); color: #104a55; border: 2px solid rgba(255,255,255,.22); }
+.patient-info strong { color: #f1f7fa; font-size: 11px !important; }
+.patient-info small { color: #8fa9b9; font-size: 9px; }
+.book-appointment {
+  margin: 14px 16px 24px; width: calc(100% - 32px); min-height: 44px; height: auto;
+  border: 1px solid rgba(255,255,255,.16); border-radius: 12px;
+  background: linear-gradient(135deg,#27c6b5,#128e91); color: #062d37;
+  box-shadow: 0 8px 20px rgba(20,184,166,.18); font-size: 11px; letter-spacing: .01em;
+}
+.book-appointment:hover { background: linear-gradient(135deg,#42d7c6,#18a5a4); transform: translateY(-1px); box-shadow: 0 12px 24px rgba(20,184,166,.25); }
+.sidebar-menu { gap: 5px; padding: 0 12px; }
+.sidebar-item {
+  height: 44px; border-radius: 11px; padding: 0 14px; gap: 13px;
+  color: #a9bdc9; font-size: 12px; font-weight: 500; border-left: 0;
+}
+.sidebar-item svg { flex-shrink: 0; opacity: .88; }
+.sidebar-item:hover { color: #fff; background: rgba(255,255,255,.07); }
+.sidebar-item.active {
+  color: #d8fffa; background: linear-gradient(90deg,rgba(32,184,173,.22),rgba(32,184,173,.08));
+  border-left: 0; padding-left: 14px; box-shadow: inset 3px 0 #35d0bf;
+}
+.sidebar-item.active svg { color: #50ddcf; }
+.sidebar-bottom { padding: 14px 12px; border-top-color: rgba(255,255,255,.09); }
+.sidebar-bottom .sidebar-item[style*="220"], .sidebar-bottom .sidebar-item[style*="dc2626"] { color: #fca5a5 !important; }
+.topbar {
+  position: sticky; top: 0; z-index: 900; min-height: 86px; height: auto;
+  padding: 16px 34px; gap: 28px;
+  background: rgba(255,255,255,.88); backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(211,226,233,.85);
+  box-shadow: 0 5px 22px rgba(16,40,61,.025);
+}
+.topbar-brand { flex-shrink: 0; }
+.medix-brand-title, .medix-brand-title-light { font-size: 21px; letter-spacing: 1.8px; }
+.top-search {
+  height: 44px; max-width: 430px; width: min(38vw,430px); border-radius: 13px;
+  padding: 0 14px; gap: 8px; background: #f7fafc; border: 1px solid #dfe9ee;
+  color: #6c8290; transition: border-color .2s, box-shadow .2s, background .2s;
+}
+.top-search:focus-within { background: #fff; border-color: #38bcb2; box-shadow: 0 0 0 4px rgba(32,184,173,.10); }
+.top-search input { font-size: 12px; color: var(--text); margin-left: 0; }
+.top-search input::placeholder { color: #91a3ae; }
+.topbar-right { gap: 14px; }
+.topbar-icon { width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 12px; color: #526b7a; }
+.topbar-icon:hover { background: #e9f7f5; color: #0e7778; }
+.top-avatar { width: 39px; height: 39px; font-size: 11px; background: linear-gradient(135deg,#d5f7f1,#b9dfe9); color: #14515b; border: 2px solid #fff; box-shadow: 0 0 0 1px #dce7ed; }
+.mobile-menu { border-radius: 10px; color: #15384a; padding: 8px; }
+.mobile-menu:hover { background: #e7f5f4; }
+.content { max-width: 1440px; padding: 34px clamp(18px,3vw,46px) 48px; margin: 0 auto; }
+.page-title { color: #132f42; font-size: clamp(25px,2.2vw,32px); font-weight: 750; letter-spacing: -.045em; line-height: 1.2; }
+.page-subtitle { color: #688091; font-size: 13px; line-height: 1.7; margin-top: 8px; margin-bottom: 26px; }
+.welcome-banner {
+  min-height: 230px; height: auto; padding: clamp(26px,4vw,44px);
+  border-radius: 24px !important; background-size: cover !important; background-position: center !important;
+  box-shadow: 0 20px 45px rgba(12,79,99,.18) !important; overflow: hidden;
+  position: relative;
+}
+.welcome-banner h1 { font-size: clamp(30px,3vw,43px) !important; letter-spacing: -.045em; line-height: 1.08; }
+.welcome-banner p { font-size: 14px !important; max-width: 540px; line-height: 1.7; }
+.stats-container { gap: 16px; margin: 24px 0 30px; }
+.stats-card {
+  border: 1px solid #e0eaf0; border-radius: 18px; padding: 21px;
+  box-shadow: 0 7px 22px rgba(16,40,61,.045); background: rgba(255,255,255,.92);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.stats-card:hover { transform: translateY(-3px); border-color: #b5e5df; box-shadow: var(--premium-shadow-hover); }
+.stats-icon { display: grid; place-items: center; width: 48px; height: 48px; flex: 0 0 48px; border-radius: 15px; background: linear-gradient(135deg,#e0f8f4,#edf7fb); color: #137b83; font-size: 26px; }
+.stats-card p { color: #708594; font-size: 12px; font-weight: 600; }
+.stats-card h2 { color: #16374a; font-size: 28px; letter-spacing: -.04em; }
+.dashboard-headings { margin-top: 32px; margin-bottom: 17px; align-items: center; }
+.dashboard-headings h2, .section-heading { color: #16374a; font-size: 18px; font-weight: 750; letter-spacing: -.025em; }
+.upcoming-heading button { border-radius: 10px; padding: 9px 13px; color: #087d7d; background: #e7f7f4; border: 1px solid #c9ede7; font-size: 11px; font-weight: 700; }
+.upcoming-heading button:hover { background: #d6f2ed; }
+.dashboard-grid { gap: 18px; }
+.health-card, .upcoming-card, .appointment-card, .doctor-card, .report-card, .simple-card, .support-card, .adherence-card, .prescription-card, .pharmacy-card {
+  border-radius: 18px !important; border-color: #e0eaf0 !important;
+  box-shadow: 0 7px 24px rgba(16,40,61,.045) !important;
+}
+.health-card:hover, .doctor-card:hover, .report-card:hover, .support-card:hover { box-shadow: var(--premium-shadow-hover) !important; }
+.appointment-tabs { border-bottom-color: #dce7ed; }
+.tab { padding: 12px 16px; color: #708594; }
+.tab.active { color: #087f7d; }
+.tab.active::after { background: linear-gradient(90deg,#20b8ad,#176b83); border-radius: 3px; }
+.appointment-card { padding: 18px; gap: 16px; background: #fff; }
+.appointment-date { border-radius: 13px; background: #e9f8f5; border-right: 0; color: #137b83; padding: 12px; }
+.outline-btn, .cancel-btn, .profile-btn, .book-now-btn, .view-report-btn, .filter-btn, .add-medication-btn, .refill-btn, .contact-btn {
+  border-radius: 11px; font-weight: 650; transition: transform .18s, box-shadow .18s, background .18s;
+}
+.outline-btn:hover, .profile-btn:hover, .book-now-btn:hover, .view-report-btn:hover, .filter-btn:hover { transform: translateY(-1px); }
+input, select, textarea { border-radius: 11px; }
+input:focus, select:focus, textarea:focus { border-color: #34bdb2 !important; box-shadow: 0 0 0 3px rgba(32,184,173,.11); outline: none; }
+.portal-footer { margin-top: auto; padding: 28px clamp(18px,3vw,42px) 18px; background: #10283d; color: #d7e6ec; border-top: 1px solid rgba(255,255,255,.06); }
+.portal-footer p, .portal-footer span { color: #9fb5c2; }
+.portal-footer h3, .portal-footer h4 { color: #f1f7fa; }
+.footer-bottom { border-top-color: rgba(255,255,255,.12); }
+.sidebar-backdrop { display: none; }
+.medix-login-container { background: #f2f7f9; }
+.medix-hero-section { background: linear-gradient(145deg,#10283d,#0b5360) !important; }
+.login-page { background: radial-gradient(ellipse at 15% 0%,rgba(32,184,173,.10),transparent 36rem),#f3f7fa; }
+.login-card { border: 1px solid rgba(220,231,237,.9); border-radius: 24px; box-shadow: 0 24px 70px rgba(16,40,61,.10); }
+.login-lock { background: linear-gradient(135deg,#e2f8f4,#e9f2fb); color: #137b83; border-radius: 16px; }
+.login-input { border-radius: 12px; border-color: #dce7ed; }
+.login-input:focus-within { border-color: #35bdb2; box-shadow: 0 0 0 4px rgba(32,184,173,.10); }
+.sign-in-button { border-radius: 12px; background: linear-gradient(135deg,#176b83,#16a89e); box-shadow: 0 10px 22px rgba(22,139,147,.20); }
+.sign-in-button:hover { transform: translateY(-1px); box-shadow: 0 14px 28px rgba(22,139,147,.25); }
+@media (max-width: 1100px) {
+  .sidebar { width: 224px; }
+  .topbar { padding-left: 22px; padding-right: 22px; gap: 18px; }
+  .content { padding: 28px 22px 40px; }
+  .top-search { width: min(32vw,360px); }
+}
+@media (max-width: 750px) {
+  .sidebar {
+    display: flex; position: fixed; inset: 0 auto 0 0; width: min(290px,84vw);
+    height: 100dvh; min-height: 100dvh; transform: translateX(-105%);
+    transition: transform .25s ease; box-shadow: 20px 0 50px rgba(6,22,36,.25);
+  }
+  .sidebar.mobile-open { transform: translateX(0); }
+  .sidebar-backdrop {
+    display: block; position: fixed; inset: 0; z-index: 1000; border: 0; border-radius: 0;
+    background: rgba(5,20,32,.48); backdrop-filter: blur(3px);
+  }
+  .topbar { min-height: 72px; padding: 12px 14px; gap: 10px; }
+  .topbar-brand { display: flex; }
+  .topbar-brand .medix-brand-title { font-size: 17px; letter-spacing: 1px; }
+  .topbar-brand .medix-brand-logo { gap: 6px; }
+  .top-search { flex: 1; min-width: 0; width: auto; height: 42px; padding: 0 10px; }
+  .topbar-right { gap: 6px; }
+  .topbar-right .topbar-icon[title="Notifications"] { display: none; }
+  .content { padding: 22px 15px 34px; }
+  .welcome-banner { min-height: 200px; padding: 25px 22px; border-radius: 19px !important; }
+  .welcome-banner h1 { font-size: clamp(27px,7vw,36px) !important; }
+  .stats-container { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+  .stats-card { padding: 15px; gap: 11px; }
+  .stats-icon { width: 40px; height: 40px; flex-basis: 40px; }
+  .stats-card h2 { font-size: 23px; }
+  .dashboard-headings { grid-template-columns: 1fr; gap: 13px; }
+  .upcoming-heading { justify-content: space-between; }
+  .footer-main { gap: 22px; }
+}
+@media (max-width: 500px) {
+  .topbar { gap: 7px; }
+  .topbar-brand .medix-brand-title { display: none; }
+  .top-search { font-size: 11px; }
+  .top-search input { min-width: 0; font-size: 11px; }
+  .topbar-right .topbar-icon[title="Settings"] { display: none; }
+  .topbar-right .top-avatar { display: none; }
+  .stats-container { grid-template-columns: 1fr 1fr; }
+  .stats-card { align-items: flex-start; flex-direction: column; }
+  .stats-card h2 { font-size: 21px; }
+  .footer-main { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+/* Dark mode refinements */
+body.dark-theme {
+  --bg: #091a29; --text: #eaf4f7; --muted: #9eb4c0; --border: #244253;
+  --light-blue: #163445; --color-white: #10283d; --color-light-bg: #091a29;
+  --color-soft-border: #244253;
+  background: radial-gradient(ellipse at 85% 0%,rgba(32,184,173,.08),transparent 34rem),#091a29 !important;
+  color: #eaf4f7 !important;
+}
+body.dark-theme .app, body.dark-theme .content, body.dark-theme .page-container, body.dark-theme .main-area {
+  background: transparent !important; color: #eaf4f7 !important;
+}
+body.dark-theme .topbar { background: rgba(13,35,52,.9); border-bottom-color: #244253; }
+body.dark-theme .top-search { background: #10283d; border-color: #244253; color: #a8bec9; }
+body.dark-theme .top-search input { color: #eaf4f7; }
+body.dark-theme .page-title, body.dark-theme .dashboard-headings h2, body.dark-theme .section-heading,
+body.dark-theme .stats-card h2 { color: #f0f8fb !important; }
+body.dark-theme .stats-card, body.dark-theme .health-card, body.dark-theme .upcoming-card,
+body.dark-theme .appointment-card, body.dark-theme .doctor-card, body.dark-theme .report-card,
+body.dark-theme .simple-card, body.dark-theme .support-card, body.dark-theme .adherence-card,
+body.dark-theme .prescription-card, body.dark-theme .pharmacy-card {
+  background: #10283d !important; color: #eaf4f7 !important; border-color: #244253 !important;
+}
+body.dark-theme .stats-card p, body.dark-theme .page-subtitle, body.dark-theme .doctor-description { color: #a7bdc9 !important; }
+body.dark-theme .appointment-date { background: #163f4b; color: #83e3d7; }
+body.dark-theme .login-page, body.dark-theme .medix-login-container { background: #091a29 !important; }
+body.dark-theme .login-card { background: #10283d; border-color: #244253; }

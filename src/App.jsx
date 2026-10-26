@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
+import "./premium-theme.css";
 
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
@@ -46,9 +47,11 @@ function App() {
 
   const [toast, setToast] = useState(null);
   const [isBookModalOpen, setIsBookModalOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navigateToPage = (newPage) => {
     setPage(newPage);
+    setIsSidebarOpen(false);
     sessionStorage.setItem("medix_page", newPage);
   };
 
@@ -141,7 +144,8 @@ function App() {
   };
 
   return (
-    <div className="app">
+    <div className={`app${isSidebarOpen ? " sidebar-open" : ""}`}>
+      {isSidebarOpen && <button className="sidebar-backdrop" aria-label="Close navigation menu" onClick={() => setIsSidebarOpen(false)} /> }
       {/* Real-time Toast Alerts */}
       <ToastNotification toast={toast} onClose={() => setToast(null)} />
 
@@ -158,16 +162,18 @@ function App() {
         user={user}
         onLogout={handleLogout}
         onOpenBookAppointment={() => setIsBookModalOpen(true)}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
       />
 
       <div className="main-area">
-        <Topbar user={user} setPage={setPage} onNavigateHome={() => setPage("Dashboard")} />
+        <Topbar user={user} setPage={navigateToPage} onNavigateHome={() => navigateToPage("Dashboard")} onToggleMenu={() => setIsSidebarOpen((open) => !open)} isMenuOpen={isSidebarOpen} />
 
         <div className="page-container">
           {renderPage()}
         </div>
 
-        <Footer setPage={setPage} onNavigateHome={() => setPage("Dashboard")} />
+        <Footer setPage={navigateToPage} onNavigateHome={() => navigateToPage("Dashboard")} />
       </div>
     </div>
   );

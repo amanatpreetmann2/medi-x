@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import { Calendar, X, Clock, Video, UserCheck, CheckCircle2, ShieldCheck } from 'lucide-react';
 
+const getLocalDate = () => {
+  const now = new Date();
+  const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 10);
+};
+
 export default function BookAppointmentModal({ isOpen, onClose, onConfirm }) {
   const [specialty, setSpecialty] = useState('Cardiology');
   const [doctor, setDoctor] = useState('Dr. Alan Smith');
   const [visitType, setVisitType] = useState('Telehealth');
   const [selectedTime, setSelectedTime] = useState('10:30 AM');
-  const [dateInput, setDateInput] = useState('2026-08-28');
+  const [dateInput, setDateInput] = useState(getLocalDate);
   const [isSuccess, setIsSuccess] = useState(false);
 
   if (!isOpen) return null;
