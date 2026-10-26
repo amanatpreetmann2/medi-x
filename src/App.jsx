@@ -173,7 +173,7 @@ function App() {
           {renderPage()}
         </div>
 
-        <Footer setPage={setPage} onNavigateHome={() => setPage("Dashboard")} />
+        <Footer setPage={navigateToPage} onNavigateHome={() => navigateToPage("Dashboard")} />
       </div>
     </div>
   );
