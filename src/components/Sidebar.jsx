@@ -77,6 +77,7 @@ function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment, isOpen 
         onClick={() => {
           if (onOpenBookAppointment) {
             onOpenBookAppointment();
+            onClose && onClose();
           } else {
             setPage("Appointments");
           }
