@@ -1,26 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Sun, Moon } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 export default function DarkModeToggle() {
-  const [isDark, setIsDark] = useState(() => {
-    return localStorage.getItem('medix_theme') === 'dark';
-  });
-
-  useEffect(() => {
-    if (isDark) {
-      document.body.classList.add('dark-theme');
-      document.documentElement.setAttribute('data-theme', 'dark');
-      localStorage.setItem('medix_theme', 'dark');
-    } else {
-      document.body.classList.remove('dark-theme');
-      document.documentElement.setAttribute('data-theme', 'light');
-      localStorage.setItem('medix_theme', 'light');
-    }
-  }, [isDark]);
+  const { isDark, toggleTheme } = useTheme();
 
   return (
     <button
-      onClick={() => setIsDark(!isDark)}
+      onClick={toggleTheme}
       style={{
         display: 'inline-flex',
         alignItems: 'center',

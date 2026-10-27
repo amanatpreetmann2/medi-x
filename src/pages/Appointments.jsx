@@ -9,7 +9,8 @@ import {
   X,
   CalendarCheck,
   CalendarX,
-  CalendarDays
+  CalendarDays,
+  AlertCircle
 } from "lucide-react";
 import {
   getPatientById,
@@ -18,13 +19,30 @@ import {
   cancelAppointment
 } from "../utils/hospitalStore";
 import { sendEmailNotification } from "../utils/emailService";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectAllAppointments,
+  addAppointment as addApptAction,
+  rescheduleAppointment as rescheduleApptAction,
+  cancelAppointment as cancelApptAction,
+  loadPatientAppointments
+} from "../store/slices/appointmentsSlice";
+import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
-export default function Appointments({ user, showToast }) {
+export default function Appointments({ user: propUser, showToast: propShowToast }) {
+  const { user: authUser } = useAuth();
+  const { showToast: contextShowToast } = useToast();
+  const user = propUser || authUser;
+  const showToast = propShowToast || contextShowToast;
+
+  const dispatch = useDispatch();
+  const appointments = useSelector(selectAllAppointments);
+
   const patientId = user?.patientId || user?.id || 'MX-1001';
   const patient = getPatientById(patientId);
 
   const [tab, setTab] = useState("Upcoming");
-  const [appointments, setAppointments] = useState(patient?.appointments || []);
   const [selectedAppt, setSelectedAppt] = useState(null);
   const [rescheduleModalAppt, setRescheduleModalAppt] = useState(null);
   const [cancelModalAppt, setCancelModalAppt] = useState(null);
@@ -44,11 +62,10 @@ export default function Appointments({ user, showToast }) {
   const [bookReason, setBookReason] = useState("");
   const [sendEmailPrompt, setSendEmailPrompt] = useState(true);
 
-  // Sync state whenever patientId changes
+  // Sync Redux state whenever patientId changes
   useEffect(() => {
-    const updated = getPatientById(patientId);
-    setAppointments(updated?.appointments || []);
-  }, [patientId]);
+    dispatch(loadPatientAppointments(patientId));
+  }, [patientId, dispatch]);
 
   const notify = (msg) => {
     setToastMessage(msg);
@@ -56,72 +73,76 @@ export default function Appointments({ user, showToast }) {
     setTimeout(() => setToastMessage(""), 4000);
   };
 
-  // Filter Upcoming vs Past/Cancelled
+  // Filter Upcoming vs Past/Cancelled from Redux store
   const upcomingList = appointments.filter(a => a.status === 'Upcoming');
   const pastList = appointments.filter(a => a.status === 'Completed' || a.status === 'Cancelled');
 
-  // Handle Reschedule
+  // Handle Reschedule via Redux Dispatch
   const handleConfirmReschedule = (e) => {
     e.preventDefault();
     if (!newDate) return;
 
-    const updated = rescheduleAppointment(patientId, rescheduleModalAppt.id, newDate, newTime);
-    if (updated) {
-      setAppointments(prev => prev.map(a => a.id === updated.id ? updated : a));
-      setRescheduleModalAppt(null);
-      notify(`✓ Appointment rescheduled to ${newDate} at ${newTime}`);
+    dispatch(rescheduleApptAction({
+      patientId,
+      appointmentId: rescheduleModalAppt.id,
+      newDate,
+      newTime
+    }));
 
-      // Send email notification if enabled
-      if (sendEmailPrompt) {
-        sendEmailNotification({
-          type: 'appointment_confirmation',
-          patient,
-          appointment: updated,
-          recipient: { name: patient.name, email: patient.email }
-        });
-      }
+    setRescheduleModalAppt(null);
+    notify(`✓ Appointment rescheduled to ${newDate} at ${newTime}`);
+
+    if (sendEmailPrompt) {
+      sendEmailNotification({
+        type: 'appointment_confirmation',
+        patient,
+        appointment: { ...rescheduleModalAppt, date: newDate, time: newTime },
+        recipient: { name: patient.name, email: patient.email }
+      });
     }
   };
 
-  // Handle Cancel
+  // Handle Cancel via Redux Dispatch
   const handleConfirmCancel = () => {
     if (!cancelModalAppt) return;
-    const updated = cancelAppointment(patientId, cancelModalAppt.id, 'Cancelled by patient request');
-    if (updated) {
-      setAppointments(prev => prev.map(a => a.id === updated.id ? updated : a));
-      setCancelModalAppt(null);
-      notify(`Appointment ${updated.id} was successfully cancelled.`);
-    }
+    dispatch(cancelApptAction({
+      patientId,
+      appointmentId: cancelModalAppt.id
+    }));
+    setCancelModalAppt(null);
+    notify(`Appointment ${cancelModalAppt.id} was successfully cancelled.`);
   };
 
-  // Handle Booking
+  // Handle Booking via Redux Dispatch
   const handleConfirmBooking = (e) => {
     e.preventDefault();
     if (!bookDoctor || !bookDate) return;
 
-    const newAppt = bookAppointment(patientId, {
+    const appointmentData = {
       doctor: bookDoctor,
       specialty: bookSpecialty,
       date: bookDate,
       time: bookTime,
       department: bookDepartment,
       reason: bookReason || 'Routine Clinical Consultation'
-    });
+    };
 
-    if (newAppt) {
-      setAppointments(prev => [newAppt, ...prev]);
-      setIsBookModalOpen(false);
-      setBookReason("");
-      notify(`✓ Appointment booked with ${newAppt.doctor} on ${newAppt.date}`);
+    dispatch(addApptAction({
+      patientId,
+      appointmentData
+    }));
 
-      if (sendEmailPrompt) {
-        sendEmailNotification({
-          type: 'appointment_confirmation',
-          patient,
-          appointment: newAppt,
-          recipient: { name: patient.name, email: patient.email }
-        });
-      }
+    setIsBookModalOpen(false);
+    setBookReason("");
+    notify(`✓ Appointment booked with ${bookDoctor} on ${bookDate}`);
+
+    if (sendEmailPrompt) {
+      sendEmailNotification({
+        type: 'appointment_confirmation',
+        patient,
+        appointment: appointmentData,
+        recipient: { name: patient.name, email: patient.email }
+      });
     }
   };
 

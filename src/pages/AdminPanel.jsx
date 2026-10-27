@@ -18,8 +18,15 @@ import {
   bookAppointment
 } from "../utils/hospitalStore";
 import PageHeader from "../components/PageHeader";
+import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
-export default function AdminPanel({ onSwitchPatient, showToast }) {
+export default function AdminPanel({ onSwitchPatient: propOnSwitch, showToast: propShowToast }) {
+  const { switchPatient } = useAuth();
+  const { showToast: contextShowToast } = useToast();
+  const onSwitchPatient = propOnSwitch || switchPatient;
+  const showToast = propShowToast || contextShowToast;
+
   const [patients, setPatients] = useState(getAllPatients());
   const [selectedPatientId, setSelectedPatientId] = useState(patients[0]?.id || 'MX-1001');
   const selectedPatient = getPatientById(selectedPatientId) || patients[0];

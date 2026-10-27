@@ -1,18 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-// Storage & Authentication helper
-import {
-  getStoredAuth,
-  setStoredAuth,
-  clearStoredAuth,
-  saveRegisteredAccount
-} from "./utils/authStorage";
-import { getPatientById } from "./utils/hospitalStore";
+// Context Providers
+import { AuthProvider } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
+import { ToastProvider } from "./context/ToastContext";
 
-// Layout Components
-import Sidebar from "./components/Sidebar";
-import Topbar from "./components/Topbar";
-import Footer from "./components/Footer";
+// Layout & Route Guards
+import AppLayout from "./layouts/AppLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Pages
 import Login from "./pages/Login";
@@ -27,135 +23,50 @@ import Profile from "./pages/Profile";
 import AdminPanel from "./pages/AdminPanel";
 import Settings from "./pages/Settings";
 import Support from "./pages/Support";
+import ArchitectureGuide from "./pages/ArchitectureGuide";
+import NotFound from "./pages/NotFound";
 
 function App() {
-  // Restore authenticated session from localStorage if available
-  const initialAuth = getStoredAuth();
-  const [loggedIn, setLoggedIn] = useState(initialAuth.isLoggedIn);
-  const [user, setUser] = useState(
-    initialAuth.user || getPatientById('MX-1001')
-  );
-  const [page, setPage] = useState("Dashboard");
-
-  // Handle successful login (email, google, or demo)
-  const handleLogin = (userData) => {
-    // If logging in with demo patient email, match full patient profile
-    const matchedPatient = getPatientById(userData.patientId) || userData;
-    const finalUser = { ...matchedPatient, ...userData };
-    setUser(finalUser);
-    setLoggedIn(true);
-    setPage("Dashboard");
-    setStoredAuth(finalUser);
-  };
-
-  // Handle user logout
-  const handleLogout = () => {
-    clearStoredAuth();
-    setLoggedIn(false);
-    setUser(null);
-  };
-
-  // Handle switching patient from Topbar Demo Switcher or Admin
-  const handleSwitchPatient = (patient) => {
-    setUser(patient);
-    setStoredAuth(patient);
-  };
-
-  // Handle user profile updates from Settings or Profile page
-  const handleUpdateUser = (updatedFields) => {
-    const updated = {
-      ...(user || {}),
-      ...updatedFields
-    };
-    setUser(updated);
-    setStoredAuth(updated);
-    saveRegisteredAccount(updated);
-  };
-
-  // ---------------------------------------------------------------------------
-  // 1. If user is NOT logged in, show the split-screen Login page
-  // ---------------------------------------------------------------------------
-  if (!loggedIn) {
-    return <Login onLogin={handleLogin} onLoginSuccess={handleLogin} />;
-  }
-
-  // ---------------------------------------------------------------------------
-  // 2. Render authenticated patient portal pages based on active navigation tab
-  // ---------------------------------------------------------------------------
-  const renderPage = () => {
-    switch (page) {
-      case "Dashboard":
-        return <Dashboard setPage={setPage} user={user} />;
-
-      case "Appointments":
-        return <Appointments user={user} />;
-
-      case "Medications":
-        return <Medications user={user} />;
-
-      case "Reports":
-        return <Reports user={user} />;
-
-      case "Notifications":
-        return <Notifications user={user} />;
-
-      case "EmailNotifications":
-        return <EmailNotifications user={user} />;
-
-      case "Profile":
-        return <Profile user={user} onUpdateUser={handleUpdateUser} />;
-
-      case "Admin":
-        return (
-          <AdminPanel
-            onSwitchPatient={(p) => {
-              handleSwitchPatient(p);
-              setPage("Dashboard");
-            }}
-          />
-        );
-
-      case "Doctors":
-        return <Doctors user={user} />;
-
-      case "Settings":
-        return <Settings user={user} onUpdateUser={handleUpdateUser} />;
-
-      case "Support":
-        return <Support user={user} />;
-
-      default:
-        return <Dashboard setPage={setPage} user={user} />;
-    }
-  };
-
-  // ---------------------------------------------------------------------------
-  // 3. Authenticated Layout Structure
-  // ---------------------------------------------------------------------------
   return (
-    <div className="app">
-      <Sidebar
-        page={page}
-        setPage={setPage}
-        user={user}
-        onLogout={handleLogout}
-      />
+    <BrowserRouter>
+      <AuthProvider>
+        <ThemeProvider>
+          <ToastProvider>
+            <Routes>
+              {/* Public Authentication Route */}
+              <Route path="/login" element={<Login />} />
 
-      <div className="main-area">
-        <Topbar
-          user={user}
-          setPage={setPage}
-          onNavigateHome={() => setPage("Dashboard")}
-          onSwitchPatient={handleSwitchPatient}
-        />
+              {/* Protected Healthcare Portal Layout Routes */}
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<Navigate to="/dashboard" replace />} />
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="appointments" element={<Appointments />} />
+                <Route path="medications" element={<Medications />} />
+                <Route path="reports" element={<Reports />} />
+                <Route path="doctors" element={<Doctors />} />
+                <Route path="notifications" element={<Notifications />} />
+                <Route path="email-notifications" element={<EmailNotifications />} />
+                <Route path="profile" element={<Profile />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="admin" element={<AdminPanel />} />
+                <Route path="support" element={<Support />} />
+                <Route path="architecture" element={<ArchitectureGuide />} />
+              </Route>
 
-        <div className="page-container">
-          {renderPage()}
-        </div>
-
-        <Footer />
-      </div>
-    </div>
+              {/* 404 Not Found Catch-All Route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </ToastProvider>
+        </ThemeProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

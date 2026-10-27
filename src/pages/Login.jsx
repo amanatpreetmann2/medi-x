@@ -1,17 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import MedixLogo from '../components/MedixLogo';
 import FloatingCard from '../components/FloatingCard';
 import LoginForm from '../components/LoginForm';
 import ForgotPasswordModal from '../components/ForgotPasswordModal';
 import medicalHeroImg from '../assets/medical_hero.png';
 import { Activity, ShieldCheck, Calendar, Lock } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export default function Login({ onLogin, onLoginSuccess }) {
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+  const { login, isLoggedIn } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleSuccessfulLogin = (userData) => {
+    login(userData);
     if (onLogin) onLogin(userData);
     if (onLoginSuccess) onLoginSuccess(userData);
+    const destination = location.state?.from?.pathname || '/dashboard';
+    navigate(destination, { replace: true });
   };
 
   return (

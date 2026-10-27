@@ -1,5 +1,7 @@
 import React from "react";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import MedixLogo from "./MedixLogo";
+import { useAuth } from "../context/AuthContext";
 
 import {
   Calendar,
@@ -10,10 +12,15 @@ import {
   LogOut,
   Bell,
   Mail,
-  User
+  User,
+  ShieldAlert,
+  Layers
 } from "lucide-react";
 
-function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
+function Sidebar({ onOpenBookAppointment }) {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
   const userDisplayName = user?.name || (user?.email ? user.email.split('@')[0] : "Kabir Patel");
   const userEmail = user?.email || "patient@medix.com";
   const patientId = user?.patientId || user?.id || "MX-1001";
@@ -30,50 +37,59 @@ function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
 
   const menuItems = [
     {
-      id: "Dashboard",
+      to: "/dashboard",
       name: "Dashboard",
       icon: <Grid2X2 size={19} />
     },
     {
-      id: "Appointments",
+      to: "/appointments",
       name: "My Appointments",
       icon: <Calendar size={19} />
     },
     {
-      id: "Reports",
+      to: "/reports",
       name: "My Health Records",
       icon: <FileText size={19} />
     },
     {
-      id: "Medications",
+      to: "/medications",
       name: "My Medicines",
       icon: <Pill size={19} />
     },
     {
-      id: "Notifications",
+      to: "/notifications",
       name: "Notifications",
       icon: <Bell size={19} />
     },
     {
-      id: "EmailNotifications",
+      to: "/email-notifications",
       name: "Email Notifications",
       icon: <Mail size={19} />
     },
     {
-      id: "Profile",
+      to: "/profile",
       name: "My Profile",
       icon: <User size={19} />
+    },
+    {
+      to: "/architecture",
+      name: "Eval-2 Architecture",
+      icon: <Layers size={19} />
     }
   ];
 
+  const handleSignOut = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <aside className="sidebar">
-
-      {/* Logo */}
-      <div 
+      {/* Logo / Brand Link */}
+      <Link 
+        to="/dashboard"
         className="sidebar-brand"
-        onClick={() => setPage && setPage("Dashboard")}
-        style={{ cursor: "pointer" }}
+        style={{ textDecoration: "none", color: "inherit", cursor: "pointer" }}
         title="Go to Dashboard"
       >
         <MedixLogo size={36} showText={false} />
@@ -81,7 +97,7 @@ function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
           <strong>Medix Portal</strong>
           <small>Patient Access</small>
         </div>
-      </div>
+      </Link>
 
       {/* Dynamic Patient Info */}
       <div className="patient">
@@ -126,14 +142,14 @@ function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
         </div>
       </div>
 
-      {/* Appointment Button */}
+      {/* Appointment CTA Button */}
       <button
         className="book-appointment"
         onClick={() => {
           if (onOpenBookAppointment) {
             onOpenBookAppointment();
           } else {
-            setPage("Appointments");
+            navigate("/appointments");
           }
         }}
       >
@@ -141,50 +157,45 @@ function Sidebar({ page, setPage, user, onLogout, onOpenBookAppointment }) {
         Book Appointment
       </button>
 
-      {/* Navigation */}
+      {/* Navigation Links using modern NavLink */}
       <nav className="sidebar-menu">
         {menuItems.map((item) => (
-          <button
-            key={item.id}
-            className={
-              page === item.id
-                ? "sidebar-item active"
-                : "sidebar-item"
+          <NavLink
+            key={item.to}
+            to={item.to}
+            className={({ isActive }) =>
+              isActive ? "sidebar-item active" : "sidebar-item"
             }
-            onClick={() => setPage(item.id)}
+            style={{ textDecoration: 'none' }}
           >
             {item.icon}
             <span>{item.name}</span>
-          </button>
+          </NavLink>
         ))}
       </nav>
 
-      {/* Bottom */}
+      {/* Bottom Actions */}
       <div className="sidebar-bottom">
-        <button
-          className={
-            page === "Settings"
-              ? "sidebar-item active"
-              : "sidebar-item"
+        <NavLink
+          to="/settings"
+          className={({ isActive }) =>
+            isActive ? "sidebar-item active" : "sidebar-item"
           }
-          onClick={() => setPage("Settings")}
+          style={{ textDecoration: 'none' }}
         >
           <SettingsIcon size={19} />
           <span>Settings</span>
+        </NavLink>
+
+        <button
+          className="sidebar-item"
+          style={{ color: '#dc2626', marginTop: '0.4rem', cursor: 'pointer' }}
+          onClick={handleSignOut}
+        >
+          <LogOut size={19} />
+          <span>Sign Out</span>
         </button>
-
-        {onLogout && (
-          <button
-            className="sidebar-item"
-            style={{ color: '#dc2626', marginTop: '0.4rem' }}
-            onClick={onLogout}
-          >
-            <LogOut size={19} />
-            <span>Sign Out</span>
-          </button>
-        )}
       </div>
-
     </aside>
   );
 }

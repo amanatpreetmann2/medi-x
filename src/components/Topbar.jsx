@@ -1,7 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import MedixLogo from "./MedixLogo";
 import DarkModeToggle from "./DarkModeToggle";
 import DemoSwitcher from "./DemoSwitcher";
+import { useAuth } from "../context/AuthContext";
+import { loadPatientAppointments } from "../store/slices/appointmentsSlice";
+import { loadPatientMedications } from "../store/slices/medicationsSlice";
+import { loadPatientReports } from "../store/slices/reportsSlice";
 import {
   Bell,
   Menu,
@@ -9,7 +15,11 @@ import {
   Settings
 } from "lucide-react";
 
-function Topbar({ user, setPage, onNavigateHome, onSwitchPatient }) {
+function Topbar() {
+  const { user, switchPatient } = useAuth();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const displayName = user?.name || user?.email || "User";
   const patientId = user?.patientId || user?.id || "MX-1001";
   
@@ -28,12 +38,12 @@ function Topbar({ user, setPage, onNavigateHome, onSwitchPatient }) {
     return "MX";
   })();
 
-  const handleGoHome = () => {
-    if (onNavigateHome) {
-      onNavigateHome();
-    } else if (setPage) {
-      setPage("Dashboard");
-    }
+  const handlePatientSwitch = (patient) => {
+    switchPatient(patient);
+    // Sync Redux slices with selected patient
+    dispatch(loadPatientAppointments(patient.id || patient.patientId));
+    dispatch(loadPatientMedications(patient.id || patient.patientId));
+    dispatch(loadPatientReports(patient.id || patient.patientId));
   };
 
   return (
@@ -44,7 +54,7 @@ function Topbar({ user, setPage, onNavigateHome, onSwitchPatient }) {
 
       <div
         className="topbar-brand"
-        onClick={handleGoHome}
+        onClick={() => navigate("/dashboard")}
         style={{ cursor: "pointer" }}
         title="Medix Home"
       >
@@ -63,16 +73,16 @@ function Topbar({ user, setPage, onNavigateHome, onSwitchPatient }) {
         {/* Convenient Demo Patient Switcher for Presentation */}
         <DemoSwitcher
           currentPatientId={patientId}
-          onSwitchPatient={onSwitchPatient}
+          onSwitchPatient={handlePatientSwitch}
         />
 
-        {/* Dark / Light Theme Toggle Switch */}
+        {/* Dark / Light Theme Toggle Switch powered by ThemeContext */}
         <DarkModeToggle />
 
         <button
           className="topbar-icon"
           title="Notifications & Reminders"
-          onClick={() => setPage && setPage("Notifications")}
+          onClick={() => navigate("/notifications")}
         >
           <Bell size={20} />
         </button>
@@ -80,7 +90,7 @@ function Topbar({ user, setPage, onNavigateHome, onSwitchPatient }) {
         <button
           className="topbar-icon"
           title="Account Settings"
-          onClick={() => setPage && setPage("Settings")}
+          onClick={() => navigate("/settings")}
         >
           <Settings size={20} />
         </button>
@@ -88,7 +98,7 @@ function Topbar({ user, setPage, onNavigateHome, onSwitchPatient }) {
         <div
           className="top-avatar"
           title={`${displayName} (${user?.email || 'Logged In'})`}
-          onClick={() => setPage && setPage("Profile")}
+          onClick={() => navigate("/profile")}
           style={{ cursor: 'pointer', overflow: 'hidden' }}
         >
           {user?.avatar ? (

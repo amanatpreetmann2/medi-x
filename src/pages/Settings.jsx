@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { Settings as SettingsIcon } from "lucide-react";
 import PageHeader from "../components/PageHeader";
+import { useAuth } from "../context/AuthContext";
 
-function Settings({ user, onUpdateUser }) {
+function Settings({ user: propUser, onUpdateUser: propUpdateUser }) {
+  const { user: authUser, updateUser: authUpdateUser } = useAuth();
+  const user = propUser || authUser;
+  const onUpdateUser = propUpdateUser || authUpdateUser;
+
   const [isEditing, setIsEditing] = useState(false);
   const [emailInput, setEmailInput] = useState(user?.email || "patient@medix.com");
   const [nameInput, setNameInput] = useState(user?.name || "");

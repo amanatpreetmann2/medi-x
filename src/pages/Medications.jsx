@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Plus,
   Check,
@@ -14,7 +14,8 @@ import {
   FileText,
   X,
   Pill,
-  CheckCircle2
+  CheckCircle2,
+  AlertCircle
 } from "lucide-react";
 import {
   toggleMedicationDose,
@@ -22,8 +23,25 @@ import {
   getPatientById
 } from "../utils/hospitalStore";
 import PageHeader from "../components/PageHeader";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectAllMedications,
+  toggleDose as toggleDoseAction,
+  addMedicationItem,
+  loadPatientMedications
+} from "../store/slices/medicationsSlice";
+import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
-export default function Medications({ user, showToast }) {
+export default function Medications({ user: propUser, showToast: propShowToast }) {
+  const { user: authUser } = useAuth();
+  const { showToast: contextShowToast } = useToast();
+  const user = propUser || authUser;
+  const showToast = propShowToast || contextShowToast;
+
+  const dispatch = useDispatch();
+  const medList = useSelector(selectAllMedications);
+
   // Active patient data based on logged in user
   const patientId = user?.patientId || user?.id || 'MX-1001';
   const patient = getPatientById(patientId);
@@ -41,15 +59,12 @@ export default function Medications({ user, showToast }) {
   const [newMedTime, setNewMedTime] = useState("8:00 AM");
   const [newMedInstructions, setNewMedInstructions] = useState("");
   const [newMedDoctor, setNewMedDoctor] = useState("Dr. Sarah Jenkins");
+  const [formError, setFormError] = useState("");
 
-  // Local state for instant UI responsiveness, backed by hospitalStore
-  const [medList, setMedList] = useState(patient?.medications || []);
-
-  // Update medList whenever patient changes
-  React.useEffect(() => {
-    const updated = getPatientById(patientId);
-    setMedList(updated?.medications || []);
-  }, [patientId]);
+  // Update Redux medList whenever patient changes
+  useEffect(() => {
+    dispatch(loadPatientMedications(patientId));
+  }, [patientId, dispatch]);
 
   // Compute display date
   const displayDate = new Date();
@@ -63,32 +78,37 @@ export default function Medications({ user, showToast }) {
 
   const isToday = selectedDateOffset === 0;
 
-  // Toggle dose taken
+  // Toggle dose taken via Redux Dispatch
   const handleToggleDose = (med) => {
+    dispatch(toggleDoseAction({ patientId, medId: med.id }));
     const nextState = !med.taken;
-    const updated = toggleMedicationDose(patientId, med.id, nextState);
-    if (updated) {
-      setMedList(prev => prev.map(m => m.id === med.id ? updated : m));
-      const msg = nextState
-        ? `✓ Dose confirmed: ${med.name} marked as TAKEN`
-        : `Dose updated: ${med.name} marked as PENDING`;
-      setToastMessage(msg);
-      if (showToast) showToast(msg, 'success');
-      setTimeout(() => setToastMessage(""), 3500);
-    }
+    const msg = nextState
+      ? `✓ Dose confirmed: ${med.name} marked as TAKEN`
+      : `Dose updated: ${med.name} marked as PENDING`;
+    setToastMessage(msg);
+    if (showToast) showToast(msg, 'success');
+    setTimeout(() => setToastMessage(""), 3500);
   };
 
-  // Add Medication
+  // Add Medication via Redux Dispatch with Form Validation
   const handleAddMedicationSubmit = (e) => {
     e.preventDefault();
-    if (!newMedName) return;
+    if (!newMedName.trim()) {
+      setFormError("Medication name is required");
+      return;
+    }
+    if (!newMedDose.trim()) {
+      setFormError("Dosage is required (e.g. 10mg, 1 tablet)");
+      return;
+    }
+    setFormError("");
 
     const newMed = {
-      name: newMedName,
-      dosage: newMedDose || '1 tablet',
+      name: newMedName.trim(),
+      dosage: newMedDose.trim(),
       period: newMedPeriod,
-      time: newMedTime,
-      instructions: newMedInstructions || 'Take with water',
+      time: newMedTime || '8:00 AM',
+      instructions: newMedInstructions || 'Take with water after meal',
       doctor: newMedDoctor,
       specialty: 'Clinical Medicine',
       startDate: new Date().toISOString().split('T')[0],
@@ -97,18 +117,16 @@ export default function Medications({ user, showToast }) {
       purpose: 'Therapeutic Prescription'
     };
 
-    const added = addMedication(patientId, newMed);
-    if (added) {
-      setMedList(prev => [...prev, added]);
-      setIsAddModalOpen(false);
-      setNewMedName("");
-      setNewMedDose("");
-      setNewMedInstructions("");
-      const msg = `Prescription added: ${newMed.name} scheduled for ${newMed.period}`;
-      setToastMessage(msg);
-      if (showToast) showToast(msg, 'success');
-      setTimeout(() => setToastMessage(""), 3500);
-    }
+    dispatch(addMedicationItem({ patientId, medicationData: newMed }));
+
+    setIsAddModalOpen(false);
+    setNewMedName("");
+    setNewMedDose("");
+    setNewMedInstructions("");
+    const msg = `✓ New prescription ${newMed.name} added to schedule`;
+    setToastMessage(msg);
+    if (showToast) showToast(msg, 'success');
+    setTimeout(() => setToastMessage(""), 4000);
   };
 
   // Medication Counts & Progress
@@ -781,6 +799,12 @@ export default function Medications({ user, showToast }) {
             </p>
 
             <form onSubmit={handleAddMedicationSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              {formError && (
+                <div style={{ color: '#EF4444', fontSize: '12px', background: '#FEE2E2', padding: '8px 12px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <AlertCircle size={14} />
+                  <span>{formError}</span>
+                </div>
+              )}
               <div>
                 <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--text, #334155)", marginBottom: "4px" }}>
                   Medicine Name *

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import StatsCard from "../components/StatsCard";
 import HealthChart from "../components/HealthChart";
 import healthBanner from "../assets/health-banner.jpg";
@@ -15,36 +16,56 @@ import {
   ShieldAlert,
   ChevronRight
 } from "lucide-react";
-import { getPatientById, toggleMedicationDose } from "../utils/hospitalStore";
+import { getPatientById } from "../utils/hospitalStore";
+import { useSelector, useDispatch } from "react-redux";
+import { selectAllAppointments } from "../store/slices/appointmentsSlice";
+import { selectAllMedications, toggleDose } from "../store/slices/medicationsSlice";
+import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
-function Dashboard({ setPage, showToast, user }) {
+function Dashboard({ setPage: propSetPage, showToast: propShowToast, user: propUser }) {
+  const navigate = useNavigate();
+  const { user: authUser } = useAuth();
+  const { showToast: contextShowToast } = useToast();
+  const user = propUser || authUser;
+  const showToast = propShowToast || contextShowToast;
+
+  const dispatch = useDispatch();
+  const appointments = useSelector(selectAllAppointments);
+  const medications = useSelector(selectAllMedications);
+
   const patientId = user?.patientId || user?.id || 'MX-1001';
   const patient = getPatientById(patientId);
 
-  const [medications, setMedications] = useState(patient?.medications || []);
-
-  useEffect(() => {
-    const updated = getPatientById(patientId);
-    setMedications(updated?.medications || []);
-  }, [patientId]);
-
-  const toggleMed = (med) => {
-    const nextState = !med.taken;
-    const updated = toggleMedicationDose(patientId, med.id, nextState);
-    if (updated) {
-      setMedications(prev => prev.map(m => m.id === med.id ? updated : m));
-      const msg = nextState
-        ? `Marked ${med.name} as TAKEN ✓`
-        : `${med.name} marked as Pending`;
-      if (showToast) showToast(msg, 'success');
-    }
+  // Navigate helper that supports both router navigation and fallback setPage
+  const goTo = (pageName) => {
+    if (propSetPage) propSetPage(pageName);
+    const routeMap = {
+      Dashboard: '/dashboard',
+      Appointments: '/appointments',
+      Medications: '/medications',
+      Reports: '/reports',
+      Profile: '/profile',
+      Settings: '/settings',
+      Notifications: '/notifications'
+    };
+    navigate(routeMap[pageName] || '/dashboard');
   };
 
-  // Find next upcoming appointment
-  const nextAppt = (patient?.appointments || []).find(a => a.status === 'Upcoming') || patient?.appointments?.[0];
+  const toggleMed = (med) => {
+    dispatch(toggleDose({ patientId, medId: med.id }));
+    const nextState = !med.taken;
+    const msg = nextState
+      ? `Marked ${med.name} as TAKEN ✓`
+      : `${med.name} marked as Pending`;
+    if (showToast) showToast(msg, 'success');
+  };
 
-  const apptCount = (patient?.appointments || []).length;
-  const medCount = (patient?.medications || []).length;
+  // Find next upcoming appointment from Redux store
+  const nextAppt = appointments.find((a) => a.status === 'Upcoming') || appointments[0];
+
+  const apptCount = appointments.length;
+  const medCount = medications.length;
   const reportCount = (patient?.reports || []).length || 3;
 
   return (
@@ -92,7 +113,7 @@ function Dashboard({ setPage, showToast, user }) {
           value={String(apptCount)}
           colorScheme="blue"
           icon={<Calendar size={26} />}
-          onClick={() => setPage("Appointments")}
+          onClick={() => goTo("Appointments")}
         />
 
         <StatsCard
@@ -100,7 +121,7 @@ function Dashboard({ setPage, showToast, user }) {
           value={String(medCount)}
           colorScheme="purple"
           icon={<Pill size={26} />}
-          onClick={() => setPage("Medications")}
+          onClick={() => goTo("Medications")}
         />
 
         <StatsCard
@@ -108,7 +129,7 @@ function Dashboard({ setPage, showToast, user }) {
           value={String(reportCount)}
           colorScheme="green"
           icon={<FileText size={26} />}
-          onClick={() => setPage("Reports")}
+          onClick={() => goTo("Reports")}
         />
 
         <StatsCard
@@ -116,7 +137,7 @@ function Dashboard({ setPage, showToast, user }) {
           value={patient?.vitals?.bp?.split(' ')?.[0] || "120/80"}
           colorScheme="rose"
           icon={<HeartPulse size={26} />}
-          onClick={() => setPage("Profile")}
+          onClick={() => goTo("Profile")}
         />
       </div>
 
@@ -128,7 +149,7 @@ function Dashboard({ setPage, showToast, user }) {
         <h2>Health Records & Lab Status</h2>
         <div className="upcoming-heading">
           <h2>Next Upcoming Appointment</h2>
-          <button onClick={() => setPage("Appointments")}>
+          <button onClick={() => goTo("Appointments")}>
             View All ({apptCount})
           </button>
         </div>
@@ -154,7 +175,7 @@ function Dashboard({ setPage, showToast, user }) {
             <Check size={14} /> {patient?.reports?.[0]?.status || "NORMAL"}
           </div>
           <button
-            onClick={() => setPage("Reports")}
+            onClick={() => goTo("Reports")}
             style={{ position: 'absolute', bottom: '14px', right: '14px', border: 'none', background: '#E0F2FE', color: '#0284C7', padding: '6px 12px', borderRadius: '8px', fontSize: '11px', fontWeight: 700, cursor: 'pointer' }}
           >
             View Report
@@ -185,7 +206,7 @@ function Dashboard({ setPage, showToast, user }) {
           <div
             className="upcoming-card"
             style={{ background: 'var(--color-white)', borderRadius: '14px', border: '1px solid var(--border)', borderLeft: '4px solid #F59E0B', padding: '18px', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer' }}
-            onClick={() => setPage("Appointments")}
+            onClick={() => goTo("Appointments")}
           >
             <div className="upcoming-date" style={{ width: '60px', height: '65px', background: '#FEF3C7', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#D97706', flexShrink: 0 }}>
               <small style={{ fontSize: '10px', fontWeight: 800 }}>{nextAppt.month || 'NOV'}</small>
@@ -215,7 +236,7 @@ function Dashboard({ setPage, showToast, user }) {
           Daily Medication Schedule ({medications.length} Prescriptions)
         </h2>
         <button
-          onClick={() => setPage("Medications")}
+          onClick={() => goTo("Medications")}
           style={{ background: 'none', border: 'none', color: 'var(--blue, #0B4F8A)', fontWeight: 700, fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
         >
           View 4-Slot Schedule <ChevronRight size={16} />

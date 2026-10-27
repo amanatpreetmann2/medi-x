@@ -10,8 +10,16 @@ import {
 } from "lucide-react";
 import { getPatientById, updatePatient } from "../utils/hospitalStore";
 import PageHeader from "../components/PageHeader";
+import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
-export default function Profile({ user, onUpdateUser, showToast }) {
+export default function Profile({ user: propUser, onUpdateUser: propUpdateUser, showToast: propShowToast }) {
+  const { user: authUser, updateUser: authUpdateUser } = useAuth();
+  const { showToast: contextShowToast } = useToast();
+  const user = propUser || authUser;
+  const onUpdateUser = propUpdateUser || authUpdateUser;
+  const showToast = propShowToast || contextShowToast;
+
   const patientId = user?.patientId || user?.id || 'MX-1001';
   const initialPatient = getPatientById(patientId);
 
