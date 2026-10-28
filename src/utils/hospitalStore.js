@@ -839,11 +839,86 @@ export function saveAllPatients(patients) {
 }
 
 /**
+ * Get active patient ID from storage (session or active key)
+ */
+export function getActivePatientId() {
+  try {
+    const rawAuth = localStorage.getItem('medix_auth_session');
+    if (rawAuth) {
+      const auth = JSON.parse(rawAuth);
+      if (auth?.user?.patientId) return auth.user.patientId;
+      if (auth?.user?.id) return auth.user.id;
+    }
+    const directId = localStorage.getItem(STORAGE_KEYS.ACTIVE_PATIENT_ID);
+    if (directId) return directId;
+  } catch (err) {
+    console.error('Error getting active patient ID:', err);
+  }
+  return 'MX-1001';
+}
+
+/**
+ * Persist active patient ID in localStorage
+ */
+export function setActivePatientId(patientId) {
+  try {
+    if (patientId) {
+      localStorage.setItem(STORAGE_KEYS.ACTIVE_PATIENT_ID, patientId);
+    }
+  } catch (err) {
+    console.error('Error setting active patient ID:', err);
+  }
+}
+
+/**
+ * Ensure patient record exists in hospital store for any user (demo, registered, or Google)
+ */
+export function ensurePatientRecord(userData) {
+  if (!userData) return null;
+  const patients = getAllPatients();
+  const patientId = userData.patientId || userData.id || 'MX-1001';
+
+  const existing = patients.find(p =>
+    p.id === patientId ||
+    p.patientId === patientId ||
+    (userData.email && p.email && p.email.toLowerCase() === userData.email.toLowerCase())
+  );
+
+  if (existing) {
+    existing.id = existing.id || patientId;
+    existing.patientId = existing.patientId || existing.id;
+    saveAllPatients(patients);
+    return existing;
+  }
+
+  // Clone template (default patient Kabir Patel) for new user so they have a complete baseline schedule
+  const template = DEFAULT_PATIENTS[0];
+  const newPatient = {
+    ...JSON.parse(JSON.stringify(template)),
+    id: patientId,
+    patientId: patientId,
+    name: userData.name || 'Patient',
+    email: userData.email || `${patientId.toLowerCase()}@medix.com`,
+    bloodGroup: userData.bloodGroup || 'B+',
+    createdAt: new Date().toISOString()
+  };
+
+  patients.push(newPatient);
+  saveAllPatients(patients);
+  return newPatient;
+}
+
+/**
  * Get a single patient by ID (e.g. 'MX-1001')
  */
 export function getPatientById(id) {
+  if (!id) return getAllPatients()[0];
   const patients = getAllPatients();
-  return patients.find(p => p.id === id) || patients[0];
+  return (
+    patients.find(p => p.id === id || p.patientId === id) ||
+    patients.find(p => p.email && p.email.toLowerCase() === String(id).toLowerCase()) ||
+    patients[0]
+  );
 }
 
 /**
@@ -853,7 +928,7 @@ export function getPatientByEmail(email) {
   if (!email) return null;
   const cleanEmail = email.trim().toLowerCase();
   const patients = getAllPatients();
-  return patients.find(p => p.email.toLowerCase() === cleanEmail) || null;
+  return patients.find(p => p.email && p.email.toLowerCase() === cleanEmail) || null;
 }
 
 /**
@@ -861,7 +936,7 @@ export function getPatientByEmail(email) {
  */
 export function updatePatient(patientId, updates) {
   const patients = getAllPatients();
-  const index = patients.findIndex(p => p.id === patientId);
+  const index = patients.findIndex(p => p.id === patientId || p.patientId === patientId);
   if (index === -1) return null;
 
   patients[index] = {
@@ -878,17 +953,36 @@ export function updatePatient(patientId, updates) {
  * Toggle medication taken status for a patient and record timestamp
  */
 export function toggleMedicationDose(patientId, medId, takenState) {
-  const patients = getAllPatients();
-  const patientIndex = patients.findIndex(p => p.id === patientId);
-  if (patientIndex === -1) return false;
+  let patients = getAllPatients();
+  let patientIndex = patients.findIndex(p => p.id === patientId || p.patientId === patientId);
+
+  if (patientIndex === -1 && patientId) {
+    patientIndex = patients.findIndex(p => p.email && p.email.toLowerCase() === String(patientId).toLowerCase());
+  }
+
+  if (patientIndex === -1 && patientId) {
+    ensurePatientRecord({ id: patientId, patientId });
+    patients = getAllPatients();
+    patientIndex = patients.findIndex(p => p.id === patientId || p.patientId === patientId);
+  }
+
+  // Safety fallback to first patient if patient ID is still not matched
+  if (patientIndex === -1) {
+    patientIndex = 0;
+  }
 
   const patient = patients[patientIndex];
-  const medIndex = patient.medications.findIndex(m => m.id === medId);
+  if (!patient || !Array.isArray(patient.medications)) return false;
+
+  let medIndex = patient.medications.findIndex(m => m.id === medId);
+  if (medIndex === -1) {
+    medIndex = patient.medications.findIndex(m => m.name && m.name.toLowerCase() === String(medId).toLowerCase());
+  }
   if (medIndex === -1) return false;
 
   const targetMed = patient.medications[medIndex];
   const newTaken = typeof takenState === 'boolean' ? takenState : !targetMed.taken;
-  
+
   const now = new Date();
   const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -900,9 +994,30 @@ export function toggleMedicationDose(patientId, medId, takenState) {
 
   saveAllPatients(patients);
 
+  // Sync updated patient medications into active auth session in localStorage
+  try {
+    const rawAuth = localStorage.getItem('medix_auth_session');
+    if (rawAuth) {
+      const auth = JSON.parse(rawAuth);
+      if (
+        auth?.user &&
+        (auth.user.id === patient.id ||
+          auth.user.patientId === patient.id ||
+          auth.user.id === patient.patientId ||
+          auth.user.patientId === patient.patientId ||
+          (auth.user.email && patient.email && auth.user.email.toLowerCase() === patient.email.toLowerCase()))
+      ) {
+        auth.user = { ...auth.user, medications: patient.medications };
+        localStorage.setItem('medix_auth_session', JSON.stringify(auth));
+      }
+    }
+  } catch (err) {
+    console.error('Error syncing auth session on dose toggle:', err);
+  }
+
   // Also log dose action to dose log history
   logDoseAction({
-    patientId,
+    patientId: patient.id || patientId,
     patientName: patient.name,
     medicineId: medId,
     medicineName: targetMed.name,
@@ -919,9 +1034,18 @@ export function toggleMedicationDose(patientId, medId, takenState) {
  * Add a new medication for a patient
  */
 export function addMedication(patientId, newMed) {
-  const patients = getAllPatients();
-  const index = patients.findIndex(p => p.id === patientId);
-  if (index === -1) return null;
+  let patients = getAllPatients();
+  let index = patients.findIndex(p => p.id === patientId || p.patientId === patientId);
+
+  if (index === -1 && patientId) {
+    ensurePatientRecord({ id: patientId, patientId });
+    patients = getAllPatients();
+    index = patients.findIndex(p => p.id === patientId || p.patientId === patientId);
+  }
+
+  if (index === -1) {
+    index = 0;
+  }
 
   const medWithId = {
     ...newMed,
@@ -940,9 +1064,14 @@ export function addMedication(patientId, newMed) {
  * Book a new appointment for a patient
  */
 export function bookAppointment(patientId, appointmentData) {
-  const patients = getAllPatients();
-  const index = patients.findIndex(p => p.id === patientId);
-  if (index === -1) return null;
+  let patients = getAllPatients();
+  let index = patients.findIndex(p => p.id === patientId || p.patientId === patientId);
+  if (index === -1 && patientId) {
+    ensurePatientRecord({ id: patientId, patientId });
+    patients = getAllPatients();
+    index = patients.findIndex(p => p.id === patientId || p.patientId === patientId);
+  }
+  if (index === -1) index = 0;
 
   const appointmentDate = new Date(appointmentData.date);
   const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
@@ -973,10 +1102,11 @@ export function bookAppointment(patientId, appointmentData) {
  */
 export function rescheduleAppointment(patientId, appointmentId, newDateString, newTime) {
   const patients = getAllPatients();
-  const patientIndex = patients.findIndex(p => p.id === patientId);
-  if (patientIndex === -1) return null;
+  let patientIndex = patients.findIndex(p => p.id === patientId || p.patientId === patientId);
+  if (patientIndex === -1) patientIndex = 0;
 
   const patient = patients[patientIndex];
+  if (!patient || !Array.isArray(patient.appointments)) return null;
   const apptIndex = patient.appointments.findIndex(a => a.id === appointmentId);
   if (apptIndex === -1) return null;
 
@@ -1002,10 +1132,11 @@ export function rescheduleAppointment(patientId, appointmentId, newDateString, n
  */
 export function cancelAppointment(patientId, appointmentId, reason = 'Cancelled by patient') {
   const patients = getAllPatients();
-  const patientIndex = patients.findIndex(p => p.id === patientId);
-  if (patientIndex === -1) return null;
+  let patientIndex = patients.findIndex(p => p.id === patientId || p.patientId === patientId);
+  if (patientIndex === -1) patientIndex = 0;
 
   const patient = patients[patientIndex];
+  if (!patient || !Array.isArray(patient.appointments)) return null;
   const apptIndex = patient.appointments.findIndex(a => a.id === appointmentId);
   if (apptIndex === -1) return null;
 

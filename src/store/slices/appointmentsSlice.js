@@ -1,12 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
   getPatientById,
+  getActivePatientId,
   bookAppointment as bookInStore,
   rescheduleAppointment as rescheduleInStore,
   cancelAppointment as cancelInStore
 } from '../../utils/hospitalStore';
 
-const initialPatient = getPatientById('MX-1001');
+const activePatientId = getActivePatientId();
+const initialPatient = getPatientById(activePatientId);
 
 const initialState = {
   items: initialPatient?.appointments || [],
@@ -23,15 +25,16 @@ export const appointmentsSlice = createSlice({
       state.items = action.payload;
     },
     loadPatientAppointments: (state, action) => {
-      const patientId = action.payload;
+      const patientId = action.payload || getActivePatientId();
       const patient = getPatientById(patientId);
       state.items = patient?.appointments || [];
     },
     addAppointment: (state, action) => {
       const { patientId, appointmentData } = action.payload;
+      const targetPatientId = patientId || getActivePatientId();
       // Persist to underlying hospital store if patientId provided
-      if (patientId) {
-        const persisted = bookInStore(patientId, appointmentData);
+      if (targetPatientId) {
+        const persisted = bookInStore(targetPatientId, appointmentData);
         if (persisted) {
           state.items.unshift(persisted);
           return;
@@ -46,8 +49,9 @@ export const appointmentsSlice = createSlice({
     },
     rescheduleAppointment: (state, action) => {
       const { patientId, appointmentId, newDate, newTime } = action.payload;
-      if (patientId) {
-        rescheduleInStore(patientId, appointmentId, newDate, newTime);
+      const targetPatientId = patientId || getActivePatientId();
+      if (targetPatientId) {
+        rescheduleInStore(targetPatientId, appointmentId, newDate, newTime);
       }
       const existing = state.items.find((a) => a.id === appointmentId);
       if (existing) {
@@ -58,8 +62,9 @@ export const appointmentsSlice = createSlice({
     },
     cancelAppointment: (state, action) => {
       const { patientId, appointmentId } = action.payload;
-      if (patientId) {
-        cancelInStore(patientId, appointmentId);
+      const targetPatientId = patientId || getActivePatientId();
+      if (targetPatientId) {
+        cancelInStore(targetPatientId, appointmentId);
       }
       const existing = state.items.find((a) => a.id === appointmentId);
       if (existing) {

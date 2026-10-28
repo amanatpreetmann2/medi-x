@@ -1,11 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
   getPatientById,
+  getActivePatientId,
   toggleMedicationDose as toggleInStore,
   addMedication as addInStore
 } from '../../utils/hospitalStore';
 
-const initialPatient = getPatientById('MX-1001');
+const activePatientId = getActivePatientId();
+const initialPatient = getPatientById(activePatientId);
 
 const initialState = {
   items: initialPatient?.medications || [],
@@ -22,29 +24,31 @@ export const medicationsSlice = createSlice({
       state.items = action.payload;
     },
     loadPatientMedications: (state, action) => {
-      const patientId = action.payload;
+      const patientId = action.payload || getActivePatientId();
       const patient = getPatientById(patientId);
       state.items = patient?.medications || [];
     },
     toggleDose: (state, action) => {
       const { patientId, medId } = action.payload;
+      const targetPatientId = patientId || getActivePatientId();
       const existing = state.items.find((m) => m.id === medId);
       if (existing) {
         const nextState = !existing.taken;
         existing.taken = nextState;
-        if (patientId) {
-          toggleInStore(patientId, medId, nextState);
+        const updated = toggleInStore(targetPatientId, medId, nextState);
+        if (updated && typeof updated === 'object') {
+          existing.taken = updated.taken;
+          existing.takenTime = updated.takenTime;
         }
       }
     },
     addMedicationItem: (state, action) => {
       const { patientId, medicationData } = action.payload;
-      if (patientId) {
-        const persisted = addInStore(patientId, medicationData);
-        if (persisted) {
-          state.items.unshift(persisted);
-          return;
-        }
+      const targetPatientId = patientId || getActivePatientId();
+      const persisted = addInStore(targetPatientId, medicationData);
+      if (persisted) {
+        state.items.unshift(persisted);
+        return;
       }
       const newMed = {
         id: `med_${Date.now()}`,

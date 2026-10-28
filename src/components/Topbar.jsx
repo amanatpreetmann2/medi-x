@@ -8,6 +8,7 @@ import { useAuth } from "../context/AuthContext";
 import { loadPatientAppointments } from "../store/slices/appointmentsSlice";
 import { loadPatientMedications } from "../store/slices/medicationsSlice";
 import { loadPatientReports } from "../store/slices/reportsSlice";
+import { setActivePatientId } from "../utils/hospitalStore";
 import {
   Bell,
   Menu,
@@ -39,11 +40,13 @@ function Topbar() {
   })();
 
   const handlePatientSwitch = (patient) => {
+    const id = patient.id || patient.patientId;
+    setActivePatientId(id);
     switchPatient(patient);
     // Sync Redux slices with selected patient
-    dispatch(loadPatientAppointments(patient.id || patient.patientId));
-    dispatch(loadPatientMedications(patient.id || patient.patientId));
-    dispatch(loadPatientReports(patient.id || patient.patientId));
+    dispatch(loadPatientAppointments(id));
+    dispatch(loadPatientMedications(id));
+    dispatch(loadPatientReports(id));
   };
 
   return (

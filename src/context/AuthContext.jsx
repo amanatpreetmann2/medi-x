@@ -5,21 +5,35 @@ import {
   clearStoredAuth,
   saveRegisteredAccount
 } from '../utils/authStorage';
-import { getPatientById } from '../utils/hospitalStore';
+import {
+  getPatientById,
+  getActivePatientId,
+  setActivePatientId,
+  ensurePatientRecord
+} from '../utils/hospitalStore';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const initialAuth = getStoredAuth();
+  const currentPatientId =
+    initialAuth?.user?.patientId || initialAuth?.user?.id || getActivePatientId();
+  const latestPatient = getPatientById(currentPatientId);
+
   const [isLoggedIn, setIsLoggedIn] = useState(initialAuth.isLoggedIn);
   const [user, setUser] = useState(
-    initialAuth.user || getPatientById('MX-1001')
+    latestPatient
+      ? { ...(initialAuth.user || {}), ...latestPatient }
+      : initialAuth.user || getPatientById('MX-1001')
   );
   const [loading, setLoading] = useState(false);
 
   // Sync with localStorage on changes
   const login = (userData) => {
-    const matchedPatient = getPatientById(userData.patientId) || userData;
+    const id = userData.patientId || userData.id;
+    if (id) setActivePatientId(id);
+    ensurePatientRecord(userData);
+    const matchedPatient = getPatientById(id) || userData;
     const finalUser = { ...matchedPatient, ...userData };
     setUser(finalUser);
     setIsLoggedIn(true);
@@ -33,6 +47,8 @@ export function AuthProvider({ children }) {
   };
 
   const switchPatient = (patient) => {
+    const id = patient.id || patient.patientId;
+    if (id) setActivePatientId(id);
     setUser(patient);
     setStoredAuth(patient);
   };

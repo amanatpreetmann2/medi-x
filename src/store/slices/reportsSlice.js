@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getPatientById } from '../../utils/hospitalStore';
+import { getPatientById, getActivePatientId } from '../../utils/hospitalStore';
 
-const initialPatient = getPatientById('MX-1001');
+const activePatientId = getActivePatientId();
+const initialPatient = getPatientById(activePatientId);
 
 const initialState = {
   items: initialPatient?.reports || [],
@@ -19,7 +20,7 @@ export const reportsSlice = createSlice({
       state.items = action.payload;
     },
     loadPatientReports: (state, action) => {
-      const patientId = action.payload;
+      const patientId = action.payload || getActivePatientId();
       const patient = getPatientById(patientId);
       state.items = patient?.reports || [];
     },

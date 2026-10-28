@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import StatsCard from "../components/StatsCard";
 import HealthChart from "../components/HealthChart";
@@ -18,8 +18,8 @@ import {
 } from "lucide-react";
 import { getPatientById } from "../utils/hospitalStore";
 import { useSelector, useDispatch } from "react-redux";
-import { selectAllAppointments } from "../store/slices/appointmentsSlice";
-import { selectAllMedications, toggleDose } from "../store/slices/medicationsSlice";
+import { selectAllAppointments, loadPatientAppointments } from "../store/slices/appointmentsSlice";
+import { selectAllMedications, toggleDose, loadPatientMedications } from "../store/slices/medicationsSlice";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 
@@ -36,6 +36,14 @@ function Dashboard({ setPage: propSetPage, showToast: propShowToast, user: propU
 
   const patientId = user?.patientId || user?.id || 'MX-1001';
   const patient = getPatientById(patientId);
+
+  // Sync Redux medications and appointments for this patient on mount / patient change
+  useEffect(() => {
+    if (patientId) {
+      dispatch(loadPatientMedications(patientId));
+      dispatch(loadPatientAppointments(patientId));
+    }
+  }, [patientId, dispatch]);
 
   // Navigate helper that supports both router navigation and fallback setPage
   const goTo = (pageName) => {
